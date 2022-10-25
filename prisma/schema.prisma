@@ -9,3 +9,85 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+model ProveedoresMensajeria {
+  proveedor_mensajeria_id         Int                               @id(map: "pk_proveedor_mensajeria_id") @default(autoincrement())
+  nombre                          String                            @db.VarChar(255)
+  medio_mensajeria                MedioMensajeria
+  ProveedoresMensajeriaParametros ProveedoresMensajeriaParametros[]
+
+  @@index([proveedor_mensajeria_id], name: "idx_proveedor_mensajeria_id")
+}
+
+model ProveedoresMensajeriaParametros {
+  proveedor_mensajeria_parametro_id Int                   @id(map: "pk_proveedor_mensajeria_parametro_id") @default(autoincrement())
+  proveedor_mensajeria_id           Int
+  nombre                            String                @db.VarChar(255)
+  valor                             String                @db.VarChar(255)
+  descripcion                       String                @default("") @db.Text()
+  ProveedoresMensajeria             ProveedoresMensajeria @relation(fields: [proveedor_mensajeria_id], references: [proveedor_mensajeria_id], onDelete: NoAction, map: "fk_pro_men_par_proveedor_mensajeria_id")
+
+  @@index([proveedor_mensajeria_parametro_id], name: "idx_proveedor_mensajeria_parametro_id")
+}
+
+model CorreosRemitentes {
+  correo_remitente_id Int    @id(map: "pk_correo_remitente_id") @default(autoincrement())
+  nombre              String @db.VarChar(255)
+  tipo_remitente      String
+
+  @@index([correo_remitente_id], name: "idx_correo_remitente_id")
+}
+
+model Plantillas {
+  plantilla_id Int    @id(map: "pk_plantilla_id") @default(autoincrement())
+  codigo       String @db.VarChar(20)
+  nombre       String @db.VarChar(255)
+  asunto       String @default("") @db.Text()
+  cuerpo       String @default("") @db.Text()
+  descripcion  String @default("") @db.Text()
+
+  @@index([plantilla_id], name: "idx_plantilla_id")
+}
+
+model CorreosEnviados {
+  correo_enviado_id           Int                           @id(map: "pk_correo_enviado_id") @default(autoincrement())
+  empresa_id                  Int
+  fecha_envio                 DateTime
+  fecha_recibido              DateTime?
+  indicador_entregado         Boolean
+  correo_destino              String                        @db.VarChar(120)
+  peticion                    String                        @default("") @db.Text()
+  respuesta                   String                        @default("") @db.Text()
+  mensaje_id                  String                        @unique() @db.VarChar(100)
+  origen_peticion             String                        @db.VarChar(100)
+  CorreosEnviadosTrazabilidad CorreosEnviadosTrazabilidad[]
+
+  @@index([correo_enviado_id], name: "idx_correo_enviado_id")
+}
+
+model CorreosEnviadosTrazabilidad {
+  correo_enviado_trazabilidad_id Int                @id(map: "pk_correo_enviado_trazabilidad_id") @default(autoincrement())
+  evento                         String             @db.VarChar(100)
+  mensaje_id                     String             @db.VarChar(100)
+  fecha_estado                   DateTime
+  respuesta                      String             @default("") @db.Text()
+  CorreosEnviados                CorreosEnviados    @relation(fields: [mensaje_id], references: [mensaje_id], onDelete: NoAction, map: "fk_eve_cor_correo_enviado_id")
+  CorreosFiltrados               CorreosFiltrados[]
+
+  @@index([correo_enviado_trazabilidad_id], name: "idx_correo_enviado_trazabilidad_id")
+}
+
+model CorreosFiltrados {
+  correo_filtrado_id             Int                         @id(map: "pk_correo_filtrado_id") @default(autoincrement())
+  correo_enviado_trazabilidad_id Int
+  correo                         String                      @db.VarChar(100)
+  CorreosEnviadosTrazabilidad    CorreosEnviadosTrazabilidad @relation(fields: [correo_enviado_trazabilidad_id], references: [correo_enviado_trazabilidad_id], onDelete: NoAction, map: "fk_correo_bloqueado_correo_enviado_trazabilidad_id")
+
+  @@index([correo_filtrado_id], name: "idx_correo_filtrado_id")
+}
+
+enum MedioMensajeria {
+  CORREO
+  SMS
+  WHATSAPP
+}
