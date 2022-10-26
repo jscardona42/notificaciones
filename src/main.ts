@@ -18,6 +18,6 @@ async function bootstrap() {
   app.useGlobalGuards(new GqlAuthGuard());
   app.useGlobalPipes(new ValidationPipe());
   app.enableCors();
-  await app.listen(process.env.PORT || 3005)
+  await app.listen(process.env.PORT || 3007)
 }
 bootstrap();
