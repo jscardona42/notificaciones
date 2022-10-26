@@ -12,11 +12,11 @@ type ProveedoresMensajeriaParametros {
 type ProveedoresMensajeria {
   proveedor_mensajeria_id: Float!
   nombre: String!
-  tipo_mensajeria: TipoMensajeria!
+  medio_mensajeria: MedioMensajeria!
   ProveedoresMensajeriaParametros: [ProveedoresMensajeriaParametros!]!
 }
 
-enum TipoMensajeria {
+enum MedioMensajeria {
   CORREO
   SMS
   WHATSAPP
@@ -35,7 +35,7 @@ type Mutation {
 
 input CreateProveedoresMensajeriaInput {
   nombre: String!
-  tipo_mensajeria: TipoMensajeria!
+  medio_mensajeria: MedioMensajeria!
   ProveedoresMensajeriaParametros: [CreateProveedoresMensajeriaParametroInput!]!
 }
 
@@ -48,7 +48,7 @@ input CreateProveedoresMensajeriaParametroInput {
 input UpdateProveedorMensajeriaInput {
   proveedor_mensajeria_id: Int!
   nombre: String
-  tipo_mensajeria: TipoMensajeria
+  medio_mensajeria: MedioMensajeria
   ProveedoresMensajeriaParametros: [UpdateProveedorMensajeriaParametroInput!]
 }
 

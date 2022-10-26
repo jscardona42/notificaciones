@@ -1,11 +1,11 @@
 import 'reflect-metadata'
 import { Field, InputType, Int, registerEnumType } from '@nestjs/graphql'
 import { IsNotEmpty } from 'class-validator'
-import { TipoMensajeria } from '@prisma/client'
+import { MedioMensajeria } from '@prisma/client'
 import { CreateProveedoresMensajeriaParametroInput, UpdateProveedorMensajeriaParametroInput } from './proveedoresmensajeriaparametros.dto'
 
-registerEnumType(TipoMensajeria, {
-    name: 'TipoMensajeria'
+registerEnumType(MedioMensajeria, {
+    name: 'MedioMensajeria'
 })
 
 @InputType()
@@ -15,9 +15,9 @@ export class CreateProveedoresMensajeriaInput {
     @IsNotEmpty()
     nombre: string
 
-    @Field(() => TipoMensajeria)
+    @Field(() => MedioMensajeria)
     @IsNotEmpty()
-    tipo_mensajeria: TipoMensajeria
+    medio_mensajeria: MedioMensajeria
 
     @Field(() => [CreateProveedoresMensajeriaParametroInput])
     @IsNotEmpty()
@@ -33,8 +33,8 @@ export class UpdateProveedorMensajeriaInput {
     @Field(() => String, { nullable: true })
     nombre?: string
 
-    @Field(() => TipoMensajeria, { nullable: true })
-    tipo_mensajeria?: TipoMensajeria
+    @Field(() => MedioMensajeria, { nullable: true })
+    medio_mensajeria?: MedioMensajeria
 
     @Field(() => [UpdateProveedorMensajeriaParametroInput], { nullable: true })
     ProveedoresMensajeriaParametros?: UpdateProveedorMensajeriaParametroInput[]
