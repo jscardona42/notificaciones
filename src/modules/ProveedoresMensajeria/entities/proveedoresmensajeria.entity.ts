@@ -1,10 +1,10 @@
 import 'reflect-metadata'
 import { ObjectType, Field, registerEnumType } from '@nestjs/graphql'
-import { TipoMensajeria } from '@prisma/client'
+import { MedioMensajeria } from '@prisma/client'
 import { ProveedoresMensajeriaParametros } from './proveedormensajeriaparametros.entity'
 
-registerEnumType(TipoMensajeria, {
-    name: 'TipoMensajeria'
+registerEnumType(MedioMensajeria, {
+    name: 'MedioMensajeria'
 })
 
 @ObjectType()
@@ -16,8 +16,8 @@ export class ProveedoresMensajeria {
     @Field(() => String)
     nombre: string
 
-    @Field(() => TipoMensajeria)
-    tipo_mensajeria: TipoMensajeria
+    @Field(() => MedioMensajeria)
+    medio_mensajeria: MedioMensajeria
 
     @Field(() => [ProveedoresMensajeriaParametros])
     ProveedoresMensajeriaParametros: ProveedoresMensajeriaParametros[]
