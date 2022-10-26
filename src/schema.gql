@@ -1,0 +1,60 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type ProveedoresMensajeriaParametros {
+  proveedor_mensajeria_parametro_id: Float!
+  nombre: String!
+  valor: String!
+  descripcion: String!
+}
+
+type ProveedoresMensajeria {
+  proveedor_mensajeria_id: Float!
+  nombre: String!
+  medio_mensajeria: MedioMensajeria!
+  ProveedoresMensajeriaParametros: [ProveedoresMensajeriaParametros!]!
+}
+
+enum MedioMensajeria {
+  CORREO
+  SMS
+  WHATSAPP
+}
+
+type Query {
+  getProveedoresMensajeria: [ProveedoresMensajeria!]!
+  getProveedorMensajeriaById(proveedor_mensajeria_id: Float!): ProveedoresMensajeria!
+}
+
+type Mutation {
+  createProveedorMensajeria(data: CreateProveedoresMensajeriaInput!): ProveedoresMensajeria!
+  updateProveedorMensajeria(data: UpdateProveedorMensajeriaInput!): ProveedoresMensajeria!
+  deleteTipoUsuario(proveedor_mensajeria_id: Float!): ProveedoresMensajeria!
+}
+
+input CreateProveedoresMensajeriaInput {
+  nombre: String!
+  medio_mensajeria: MedioMensajeria!
+  ProveedoresMensajeriaParametros: [CreateProveedoresMensajeriaParametroInput!]!
+}
+
+input CreateProveedoresMensajeriaParametroInput {
+  nombre: String!
+  valor: String!
+  descripcion: String!
+}
+
+input UpdateProveedorMensajeriaInput {
+  proveedor_mensajeria_id: Int!
+  nombre: String
+  medio_mensajeria: MedioMensajeria
+  ProveedoresMensajeriaParametros: [UpdateProveedorMensajeriaParametroInput!]
+}
+
+input UpdateProveedorMensajeriaParametroInput {
+  proveedor_mensajeria_parametro_id: Int!
+  nombre: String
+  valor: String
+  descripcion: String
+}
