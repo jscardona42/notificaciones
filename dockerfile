@@ -24,6 +24,6 @@ ADD https://github.com/ufoscout/docker-compose-wait/releases/download/2.9.0/wait
 
 RUN chmod +x /wait
 
-EXPOSE 3005
+EXPOSE 3007
 
 CMD /wait && sh run.sh
