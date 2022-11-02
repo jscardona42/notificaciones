@@ -1,5 +1,6 @@
 import { Resolver, Query, Mutation, Args } from '@nestjs/graphql';
 import { CreateProveedoresMensajeriaInput, UpdateProveedorMensajeriaInput } from './dto/proveedoresmensajeria.dto';
+import { MessageInput } from './dto/proveedoresmensajeriaparametros.dto';
 import { ProveedoresMensajeria } from './entities/proveedoresmensajeria.entity';
 import { ProveedoresMensajeriaService } from './proveedoresmensajeria.service';
 
@@ -33,7 +34,12 @@ export class ProveedoresMensajeriaResolver {
     }
 
     @Mutation(() => ProveedoresMensajeria)
-    async deleteTipoUsuario(@Args("proveedor_mensajeria_id") proveedor_mensajeria_id: number): Promise<any> {
-        return this.proveedoresMensajeriaService.deleteTipoUsuario(proveedor_mensajeria_id);
+    async deleteProveedorMensajeria(@Args("proveedor_mensajeria_id") proveedor_mensajeria_id: number): Promise<any> {
+        return this.proveedoresMensajeriaService.deleteProveedorMensajeria(proveedor_mensajeria_id);
+    }
+
+    @Mutation(() => ProveedoresMensajeria)
+    async setMessage(@Args("data") data: MessageInput): Promise<any> {
+        return this.proveedoresMensajeriaService.setMessage(data);
     }
 }
