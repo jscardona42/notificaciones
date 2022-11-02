@@ -2,8 +2,11 @@ import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { Module } from '@nestjs/common';
 import { GraphQLModule } from '@nestjs/graphql';
 import { join } from 'path';
+import { ProveedoresMensajeriaController } from './modules/ProveedoresMensajeria/proveedoresmensajeria.controller';
 import { ProveedoresMensajeriaResolver } from './modules/ProveedoresMensajeria/proveedoresmensajeria.resolver';
 import { ProveedoresMensajeriaService } from './modules/ProveedoresMensajeria/proveedoresmensajeria.service';
+import { ProveedoresMensajeriaParametrosValoresResolver } from './modules/ProveedoresMensajeriaParametrosValores/proveedoresmensajeriaparametrosvalores.resolver';
+import { ProveedoresMensajeriaParametrosValoresService } from './modules/ProveedoresMensajeriaParametrosValores/proveedoresmensajeriaparametrosvalores.service';
 import { PrismaService } from './prisma.service';
 
 @Module({
@@ -21,7 +24,7 @@ import { PrismaService } from './prisma.service';
       autoSchemaFile: join(process.cwd(), "src/schema.gql"),
     }),
   ],
-  controllers: [],
-  providers: [PrismaService, ProveedoresMensajeriaService, ProveedoresMensajeriaResolver],
+  controllers: [ProveedoresMensajeriaController],
+  providers: [PrismaService, ProveedoresMensajeriaService, ProveedoresMensajeriaResolver,  ProveedoresMensajeriaParametrosValoresService, ProveedoresMensajeriaParametrosValoresResolver],
 })
 export class AppModule { }

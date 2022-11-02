@@ -3,9 +3,8 @@
 # ------------------------------------------------------
 
 type ProveedoresMensajeriaParametros {
-  proveedor_mensajeria_parametro_id: Float!
+  pro_men_parametro_id: Float!
   nombre: String!
-  valor: String!
   descripcion: String!
 }
 
@@ -22,21 +21,34 @@ enum MedioMensajeria {
   WHATSAPP
 }
 
+type ProveedoresMensajeriaParametrosValores {
+  pro_men_parametro_valor_id: Float!
+  proveedor_mensajeria_id: Float!
+  valor: String!
+  pro_mensajeria_parametro_id: Float!
+}
+
 type Query {
   getProveedoresMensajeria: [ProveedoresMensajeria!]!
   getProveedorMensajeriaById(proveedor_mensajeria_id: Float!): ProveedoresMensajeria!
+  getProveedoresMensajeriaParametrosValores: [ProveedoresMensajeriaParametrosValores!]!
+  getProveedorMensajeriaParametroValorById(pro_men_parametro_valor_id: Float!): ProveedoresMensajeriaParametrosValores!
 }
 
 type Mutation {
   createProveedorMensajeria(data: CreateProveedoresMensajeriaInput!): ProveedoresMensajeria!
   updateProveedorMensajeria(data: UpdateProveedorMensajeriaInput!): ProveedoresMensajeria!
-  deleteTipoUsuario(proveedor_mensajeria_id: Float!): ProveedoresMensajeria!
+  deleteProveedorMensajeria(proveedor_mensajeria_id: Float!): ProveedoresMensajeria!
+  setMessage(data: MessageInput!): ProveedoresMensajeria!
+  createProveedoresMensajeriaParametrosValores(data: CreateProveedoresMensajeriaParametrosValoresInput!): ProveedoresMensajeriaParametrosValores!
+  updateProveedoresMensajeriaParametrosValores(data: UpdateProveedoresMensajeriaParametrosValoresInput!): ProveedoresMensajeriaParametrosValores!
+  deleteProveedoresMensajeriaParametrosValores(pro_men_parametro_valor_id: Float!): ProveedoresMensajeriaParametrosValores!
 }
 
 input CreateProveedoresMensajeriaInput {
   nombre: String!
   medio_mensajeria: MedioMensajeria!
-  ProveedoresMensajeriaParametros: [CreateProveedoresMensajeriaParametroInput!]!
+  ProveedoresMensajeriaParametros: [CreateProveedoresMensajeriaParametroInput!]
 }
 
 input CreateProveedoresMensajeriaParametroInput {
@@ -57,4 +69,24 @@ input UpdateProveedorMensajeriaParametroInput {
   nombre: String
   valor: String
   descripcion: String
+}
+
+input MessageInput {
+  proveedor_mensajeria_id: Float
+  usuarios: String
+  params: String
+  nombre: String
+}
+
+input CreateProveedoresMensajeriaParametrosValoresInput {
+  proveedor_mensajeria_id: Float!
+  pro_mensajeria_parametro_id: Float!
+  valor: String!
+}
+
+input UpdateProveedoresMensajeriaParametrosValoresInput {
+  pro_men_parametro_valor_id: Float!
+  proveedor_mensajeria_id: Float
+  pro_mensajeria_parametro_id: Float
+  valor: String
 }
