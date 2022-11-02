@@ -5,13 +5,10 @@ import { ObjectType, Field } from '@nestjs/graphql'
 export class ProveedoresMensajeriaParametros {
 
     @Field(() => Number)
-    proveedor_mensajeria_parametro_id: number
+    pro_men_parametro_id: number
 
     @Field(() => String)
     nombre: string
-
-    @Field(() => String)
-    valor: string
 
     @Field(() => String)
     descripcion: string
