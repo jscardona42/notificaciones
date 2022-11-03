@@ -19,9 +19,8 @@ export class CreateProveedoresMensajeriaInput {
     @IsNotEmpty()
     medio_mensajeria: MedioMensajeria
 
-    @Field(() => [CreateProveedoresMensajeriaParametroInput])
-    @IsNotEmpty()
-    ProveedoresMensajeriaParametros: CreateProveedoresMensajeriaParametroInput[]
+    @Field(() => [CreateProveedoresMensajeriaParametroInput], {nullable: true})
+    ProveedoresMensajeriaParametros?: CreateProveedoresMensajeriaParametroInput[]
 }
 
 @InputType()

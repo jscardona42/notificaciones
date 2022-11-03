@@ -11,29 +11,29 @@ datasource db {
 }
 
 model ProveedoresMensajeria {
-  proveedor_mensajeria_id         Int                               @id(map: "pk_proveedor_mensajeria_id") @default(autoincrement())
-  nombre                          String                            @db.VarChar(255)
-  medio_mensajeria                MedioMensajeria
-  ProveedoresMensajeriaParametros ProveedoresMensajeriaParametros[]
+  proveedor_mensajeria_id                Int                                      @id(map: "pk_proveedor_mensajeria_id") @default(autoincrement())
+  nombre                                 String                                   @db.VarChar(255)
+  medio_mensajeria                       MedioMensajeria
+  ProveedoresMensajeriaParametrosValores ProveedoresMensajeriaParametrosValores[]
 
   @@index([proveedor_mensajeria_id], name: "idx_proveedor_mensajeria_id")
 }
 
-model ProveedoresMensajeriaParametros {
-  proveedor_mensajeria_parametro_id Int                   @id(map: "pk_proveedor_mensajeria_parametro_id") @default(autoincrement())
-  proveedor_mensajeria_id           Int
-  nombre                            String                @db.VarChar(255)
-  valor                             String                @db.VarChar(255)
-  descripcion                       String                @default("") @db.Text()
-  ProveedoresMensajeria             ProveedoresMensajeria @relation(fields: [proveedor_mensajeria_id], references: [proveedor_mensajeria_id], onDelete: NoAction, map: "fk_pro_men_par_proveedor_mensajeria_id")
+model ProveedoresMensajeriaParametrosValores {
+  pro_men_parametro_valor_id      Int                             @id(map: "pk_pro_men_parametro_valor_id_id") @default(autoincrement())
+  proveedor_mensajeria_id         Int
+  pro_mensajeria_parametro_id     Int
+  valor                           String?                         @db.VarChar(255)
+  ProveedoresMensajeria           ProveedoresMensajeria           @relation(fields: [proveedor_mensajeria_id], references: [proveedor_mensajeria_id], onDelete: NoAction, map: "fk_pro_men_par_proveedor_mensajeria_id")
+  ProveedoresMensajeriaParametros ProveedoresMensajeriaParametros @relation(fields: [pro_mensajeria_parametro_id], references: [pro_mensajeria_parametro_id], onDelete: NoAction, map: "fk_men_par_mensajeria_parametro_id")
 
-  @@index([proveedor_mensajeria_parametro_id], name: "idx_proveedor_mensajeria_parametro_id")
+  @@index([pro_men_parametro_valor_id], name: "idx_pro_men_parametro_valor_id_id")
 }
 
 model CorreosRemitentes {
-  correo_remitente_id Int    @id(map: "pk_correo_remitente_id") @default(autoincrement())
-  nombre              String @db.VarChar(255)
-  tipo_remitente      String
+  correo_remitente_id Int           @id(map: "pk_correo_remitente_id") @default(autoincrement())
+  nombre              String        @db.VarChar(255)
+  tipo_remitente      TipoRemitente
 
   @@index([correo_remitente_id], name: "idx_correo_remitente_id")
 }
@@ -86,8 +86,23 @@ model CorreosFiltrados {
   @@index([correo_filtrado_id], name: "idx_correo_filtrado_id")
 }
 
+model ProveedoresMensajeriaParametros {
+  pro_mensajeria_parametro_id            Int                                      @id(map: "pk_pro_mensajeria_parametro_id") @default(autoincrement())
+  nombre                                 String                                   @db.VarChar(100)
+  descripcion                            String?                                  @default("") @db.Text()
+  ProveedoresMensajeriaParametrosValores ProveedoresMensajeriaParametrosValores[]
+
+  @@index([pro_mensajeria_parametro_id], name: "idx_pro_mensajeria_parametro_id")
+}
+
 enum MedioMensajeria {
   CORREO
   SMS
   WHATSAPP
+}
+
+enum TipoRemitente {
+  FACTURACION_ELECTRONICA
+  NOMINA_ELECTRONICA
+  NOTIFICACION_MASIVA
 }

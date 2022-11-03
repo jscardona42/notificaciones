@@ -13,9 +13,9 @@ export class CreatePlantillaInput {
     @IsNotEmpty()
     nombre: string
 
-    @Field(() => Date)
+    @Field(() => String)
     @IsNotEmpty()
-    asunto: Date
+    asunto: string
 
     @Field(() => String)
     @IsNotEmpty()
@@ -24,4 +24,27 @@ export class CreatePlantillaInput {
     @Field(() => String)
     @IsNotEmpty()
     descripcion: string
+}
+
+@InputType()
+export class UpdatePlantillaInput {
+
+    @Field(() => Number)
+    @IsNotEmpty()
+    plantilla_id: number
+
+    @Field(() => String)
+    codigo?: string
+
+    @Field(() => String)
+    nombre?: string
+
+    @Field(() => String)
+    asunto?: string
+
+    @Field(() => String)
+    cuerpo?: string
+
+    @Field(() => String)
+    descripcion?: string
 }

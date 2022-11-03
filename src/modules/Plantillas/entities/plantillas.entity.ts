@@ -13,8 +13,8 @@ export class Plantillas {
     @Field(() => String)
     nombre: string
 
-    @Field(() => Date)
-    asunto: Date
+    @Field(() => String)
+    asunto: string
 
     @Field(() => String)
     cuerpo: string

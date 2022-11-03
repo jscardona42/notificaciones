@@ -33,3 +33,19 @@ export class UpdateProveedorMensajeriaParametroInput {
     @Field(() => String, { nullable: true })
     descripcion?: string
 }
+
+@InputType()
+export class MessageInput {
+
+    @Field(() => Number, { nullable: true })
+    proveedor_mensajeria_id: number
+
+    @Field(() => String, { nullable: true })
+    usuarios: string
+
+    @Field(() => String, { nullable: true })
+    params: string
+
+    @Field(() => String, { nullable: true })
+    nombre: string
+}
