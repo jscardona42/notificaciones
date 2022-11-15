@@ -30,17 +30,16 @@ export class ProveedoresMensajeriaService {
     }
 
     async createProveedorMensajeria(data: CreateProveedoresMensajeriaInput): Promise<any> {
-        let arreglo = [];
+        let parametros = [];
 
-        let test = await this.prismaService.proveedoresMensajeriaParametros.findMany({
+        let proveedoresParamtros = await this.prismaService.proveedoresMensajeriaParametros.findMany({
             select: { pro_mensajeria_parametro_id: true }
         })
 
-        await test.reduce(async (promise0, valor) => {
+        await proveedoresParamtros.reduce(async (promise0, valor) => {
             await promise0;
-            arreglo.push({
-                pro_mensajeria_parametro_id: valor.pro_mensajeria_parametro_id,
-                valor: "Test"
+            parametros.push({
+                pro_mensajeria_parametro_id: valor.pro_mensajeria_parametro_id
 
             })
         }, Promise.resolve());
@@ -50,7 +49,7 @@ export class ProveedoresMensajeriaService {
                 nombre: data.nombre,
                 medio_mensajeria: data.medio_mensajeria,
                 ProveedoresMensajeriaParametrosValores: {
-                    create: arreglo
+                    create: parametros
                 }
             }
         })
@@ -85,18 +84,18 @@ export class ProveedoresMensajeriaService {
             case 1:
                 let info = await this.sendinBlueMail(usuarios, params, data.proveedor_mensajeria_id, data.nombre)
                 if (info.correo_enviado_id !== undefined) {
-                    return { nombre: "usuario nuevo"}
+                    return { nombre: "Enviado correctamente" };
                 }
-                else{
-                    return  { error: "no se pudo enviar el mensaje"}
+                else {
+                    return { error: "no se pudo enviar el mensaje" };
                 }
             case 2:
-                return this.sendSMS()
+                return this.sendSMS();
         }
     }
 
     async sendSMS() {
-
+        return { nombre: "En construcción" };
     }
 
     async sendinBlueMail(usuarios: any, params: any, proveedor_mensajeria_id: number, nombre: string) {
@@ -104,7 +103,7 @@ export class ProveedoresMensajeriaService {
         let apiInstance = new SibApiV3Sdk.TransactionalEmailsApi();
         let apiKey = apiInstance.authentications['apiKey'];
 
-        let final = await this.prismaService.proveedoresMensajeriaParametrosValores.findFirst({
+        let parametroLlave = await this.prismaService.proveedoresMensajeriaParametrosValores.findFirst({
             where: {
                 ProveedoresMensajeria: {
                     proveedor_mensajeria_id: proveedor_mensajeria_id
@@ -113,7 +112,7 @@ export class ProveedoresMensajeriaService {
             select: { valor: true }
         });
 
-        apiKey.apiKey = final.valor
+        apiKey.apiKey = parametroLlave.valor
         let limit = 50;
         let offset = 0;
 
@@ -129,13 +128,14 @@ export class ProveedoresMensajeriaService {
 
         try {
             let sendinBlue_Mail = await apiInstance.sendTransacEmail(sendSmtpEmail);
-            return this.saveInfo_SendinBlue(usuarios, sendinBlue_Mail, sendSmtpEmail)
+            return this.saveCorreosEnviados(usuarios, sendinBlue_Mail, sendSmtpEmail);
 
         } catch (error) {
-            return error
+            return error;
         }
     }
-    async saveInfo_SendinBlue(usuarios: any, sendinBlue_Mail: any, sendSmtpEmail: any) {
+
+    async saveCorreosEnviados(usuarios: any, sendinBlue_Mail: any, sendSmtpEmail: any) {
         return this.prismaService.correosEnviados.create({
             data: {
                 empresa_id: 1,
@@ -143,7 +143,7 @@ export class ProveedoresMensajeriaService {
                 correo_destino: usuarios.correo,
                 indicador_entregado: true,
                 mensaje_id: JSON.stringify(sendinBlue_Mail.body.messageId),
-                origen_peticion: "ip",
+                origen_peticion: "admin",
                 fecha_recibido: new Date(),
                 respuesta: JSON.stringify(sendinBlue_Mail.response),
                 peticion: JSON.stringify(sendSmtpEmail),
@@ -151,7 +151,7 @@ export class ProveedoresMensajeriaService {
         })
     }
 
-    async saveEventos(){
-
+    async saveEventos() {
+        return "En construcción";
     }
 }
