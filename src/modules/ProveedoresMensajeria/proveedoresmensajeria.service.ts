@@ -77,7 +77,7 @@ export class ProveedoresMensajeriaService {
         });
     }
 
-    async setMessage(data: MessageInput) {
+    async sendNotificacion (data: MessageInput) {
         let usuarios = JSON.parse(data.usuarios)
         let params = JSON.parse(data.params)
         switch (data.proveedor_mensajeria_id) {
@@ -126,12 +126,15 @@ export class ProveedoresMensajeriaService {
         sendSmtpEmail.to = [{ email: usuarios.correo, name: usuarios.nombre_usuario }];
         sendSmtpEmail.params = params;
 
+        // await this.funcion_nueva(proveedor_mensajeria_id)
         try {
             let sendinBlue_Mail = await apiInstance.sendTransacEmail(sendSmtpEmail);
             return this.saveCorreosEnviados(usuarios, sendinBlue_Mail, sendSmtpEmail);
 
         } catch (error) {
-            return error;
+            console.log(JSON.stringify(error))
+            this.saveCorreosEnviados(usuarios, error, sendSmtpEmail);
+            return error
         }
     }
 
@@ -151,7 +154,7 @@ export class ProveedoresMensajeriaService {
         })
     }
 
-    async saveEventos() {
+    async saveEventos(data: any) {
         return "En construcción";
     }
 }

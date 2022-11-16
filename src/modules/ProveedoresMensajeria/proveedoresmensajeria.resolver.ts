@@ -39,7 +39,7 @@ export class ProveedoresMensajeriaResolver {
     }
 
     @Mutation(() => ProveedoresMensajeria)
-    async setMessage(@Args("data") data: MessageInput): Promise<any> {
-        return this.proveedoresMensajeriaService.setMessage(data);
+    async sendNotificacion (@Args("data") data: MessageInput): Promise<any> {
+        return this.proveedoresMensajeriaService.sendNotificacion (data);
     }
 }
