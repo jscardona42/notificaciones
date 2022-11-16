@@ -32,7 +32,7 @@ model ProveedoresMensajeriaParametrosValores {
 
 model CorreosRemitentes {
   correo_remitente_id Int           @id(map: "pk_correo_remitente_id") @default(autoincrement())
-  nombre              String        @db.VarChar(255)
+  correo              String        @db.VarChar(255)
   tipo_remitente      TipoRemitente
 
   @@index([correo_remitente_id], name: "idx_correo_remitente_id")
