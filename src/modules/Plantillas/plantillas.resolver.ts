@@ -31,7 +31,7 @@ export class PlantillasResolver {
     }
 
     @Mutation(() => Plantillas)
-    async deleteTipoUsuario(@Args("plantilla_id") plantilla_id: number): Promise<any> {
-        return this.plantillasService.deleteTipoUsuario(plantilla_id);
+    async deletePlantilla(@Args("plantilla_id") plantilla_id: number): Promise<any> {
+        return this.plantillasService.deletePlantilla(plantilla_id);
     }
 }

@@ -53,7 +53,7 @@ export class PlantillasService {
         });
     }
 
-    async deleteTipoUsuario(plantilla_id: number): Promise<any> {
+    async deletePlantilla(plantilla_id: number): Promise<any> {
 
         await this.getPlantillaById(plantilla_id);
 
