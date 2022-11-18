@@ -55,10 +55,10 @@ model CorreosEnviados {
   fecha_envio                 DateTime
   fecha_recibido              DateTime?
   indicador_entregado         Boolean
-  correo_destino              String                        @db.VarChar(120)
+  correo_destino              String?                       @db.VarChar(120)
   peticion                    String                        @default("") @db.Text()
   respuesta                   String                        @default("") @db.Text()
-  mensaje_id                  String                        @unique() @db.VarChar(100)
+  mensaje_id                  String?                        @unique() @db.VarChar(100)
   origen_peticion             String                        @db.VarChar(100)
   CorreosEnviadosTrazabilidad CorreosEnviadosTrazabilidad[]
 
@@ -68,10 +68,10 @@ model CorreosEnviados {
 model CorreosEnviadosTrazabilidad {
   correo_enviado_trazabilidad_id Int                @id(map: "pk_correo_enviado_trazabilidad_id") @default(autoincrement())
   evento                         String             @db.VarChar(100)
-  mensaje_id                     String             @db.VarChar(100)
+  mensaje_id                     String?            @db.VarChar(100)
   fecha_estado                   DateTime
   respuesta                      String             @default("") @db.Text()
-  CorreosEnviados                CorreosEnviados    @relation(fields: [mensaje_id], references: [mensaje_id], onDelete: NoAction, map: "fk_eve_cor_correo_enviado_id")
+  CorreosEnviados                CorreosEnviados?   @relation(fields: [mensaje_id], references: [mensaje_id], onDelete: NoAction, map: "fk_eve_cor_correo_enviado_id")
   CorreosFiltrados               CorreosFiltrados[]
 
   @@index([correo_enviado_trazabilidad_id], name: "idx_correo_enviado_trazabilidad_id")

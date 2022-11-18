@@ -26,6 +26,7 @@ export class ProveedoresMensajeriaService {
         if (proveedor_mensajeria === null) {
             throw new UnauthorizedException(`El proveedor de mensajería con id ${proveedor_mensajeria_id} no existe`);
         }
+        
         return proveedor_mensajeria;
     }
 
@@ -77,7 +78,7 @@ export class ProveedoresMensajeriaService {
         });
     }
 
-    async sendNotificacion (data: MessageInput) {
+    async sendNotificacion(data: MessageInput) {
         let usuarios = JSON.parse(data.usuarios)
         let params = JSON.parse(data.params)
         switch (data.proveedor_mensajeria_id) {
@@ -125,8 +126,8 @@ export class ProveedoresMensajeriaService {
         sendSmtpEmail.sender = { email: templateInfo[0].sender.email, name: templateInfo[0].sender.name };
         sendSmtpEmail.to = [{ email: usuarios.correo, name: usuarios.nombre_usuario }];
         sendSmtpEmail.params = params;
+        // sendSmtpEmail.attachment = [{ "content": "", "name": "imagentest.png" }]
 
-        // await this.funcion_nueva(proveedor_mensajeria_id)
         try {
             let sendinBlue_Mail = await apiInstance.sendTransacEmail(sendSmtpEmail);
             return this.saveCorreosEnviados(usuarios, sendinBlue_Mail, sendSmtpEmail);
@@ -139,6 +140,11 @@ export class ProveedoresMensajeriaService {
     }
 
     async saveCorreosEnviados(usuarios: any, sendinBlue_Mail: any, sendSmtpEmail: any) {
+
+        if(sendinBlue_Mail.response.statusCode == 400){
+            sendinBlue_Mail.body.messageId = null
+        }
+
         return this.prismaService.correosEnviados.create({
             data: {
                 empresa_id: 1,
@@ -155,6 +161,14 @@ export class ProveedoresMensajeriaService {
     }
 
     async saveEventos(data: any) {
-        return "En construcción";
+
+        await this.prismaService.correosEnviadosTrazabilidad.create({
+            data: {
+                evento: data.event,
+                mensaje_id: JSON.stringify(data.message_id),
+                fecha_estado: new Date(data.date),
+                respuesta: data.subject
+            }
+        })
     }
 }

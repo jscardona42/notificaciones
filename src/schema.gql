@@ -39,7 +39,7 @@ type Mutation {
   createProveedorMensajeria(data: CreateProveedoresMensajeriaInput!): ProveedoresMensajeria!
   updateProveedorMensajeria(data: UpdateProveedorMensajeriaInput!): ProveedoresMensajeria!
   deleteProveedorMensajeria(proveedor_mensajeria_id: Float!): ProveedoresMensajeria!
-  setMessage(data: MessageInput!): ProveedoresMensajeria!
+  sendNotificacion(data: MessageInput!): ProveedoresMensajeria!
   createProveedoresMensajeriaParametrosValores(data: CreateProveedoresMensajeriaParametrosValoresInput!): ProveedoresMensajeriaParametrosValores!
   updateProveedoresMensajeriaParametrosValores(data: UpdateProveedoresMensajeriaParametrosValoresInput!): ProveedoresMensajeriaParametrosValores!
   deleteProveedoresMensajeriaParametrosValores(pro_men_parametro_valor_id: Float!): ProveedoresMensajeriaParametrosValores!
