@@ -40,6 +40,6 @@ export class ProveedoresMensajeriaResolver {
 
     @Mutation(() => ProveedoresMensajeria)
     async sendNotificacion (@Args("data") data: MessageInput): Promise<any> {
-        return this.proveedoresMensajeriaService.sendNotificacion (data);
+        return this.proveedoresMensajeriaService.sendNotificacion(data);
     }
 }

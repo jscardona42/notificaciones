@@ -1,4 +1,4 @@
-import { Controller, Post, Body } from '@nestjs/common';
+import { Controller, Post, Body, Get } from '@nestjs/common';
 import { ProveedoresMensajeriaService } from './proveedoresmensajeria.service';
 
 @Controller('notificaciones')
@@ -9,8 +9,7 @@ export class ProveedoresMensajeriaController {
 
     @Post()
     async saveEventos(@Body() data: any) {
-        console.log(data)
-        return this.proveedoresMensajeriaService.saveEventos();
+        return this.proveedoresMensajeriaService.saveEventos(data);
     }
 
 }
