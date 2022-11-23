@@ -4,6 +4,7 @@ import { PrismaService } from '../../prisma.service';
 import { CreateProveedoresMensajeriaInput, UpdateProveedorMensajeriaInput } from './dto/proveedoresmensajeria.dto';
 import { MessageInput } from './dto/proveedoresmensajeriaparametros.dto';
 const SibApiV3Sdk = require('sib-api-v3-typescript');
+const SibApiV3Sdk1 = require('sib-api-v3-sdk');
 
 
 @Injectable()
@@ -26,7 +27,7 @@ export class ProveedoresMensajeriaService {
         if (proveedor_mensajeria === null) {
             throw new UnauthorizedException(`El proveedor de mensajería con id ${proveedor_mensajeria_id} no existe`);
         }
-        
+
         return proveedor_mensajeria;
     }
 
@@ -79,8 +80,16 @@ export class ProveedoresMensajeriaService {
     }
 
     async sendNotificacion(data: MessageInput) {
+
+        if(data.usuarios == undefined){
+            return { error: "no se encontro usuario", error_code:"017"};
+        }
         let usuarios = JSON.parse(data.usuarios)
-        let params = JSON.parse(data.params)
+        let params: any
+        if(data.params !== undefined){
+            params = JSON.parse(data.params);
+        }
+        
         switch (data.proveedor_mensajeria_id) {
             case 1:
                 let info = await this.sendinBlueMail(usuarios, params, data.proveedor_mensajeria_id, data.nombre)
@@ -88,15 +97,57 @@ export class ProveedoresMensajeriaService {
                     return { nombre: "Enviado correctamente" };
                 }
                 else {
-                    return { error: "no se pudo enviar el mensaje" };
+                    return { error: "no se pudo enviar el mensaje", error_code:"018"};
                 }
             case 2:
-                return this.sendSMS();
+                let sms = await this.sendSMS(usuarios, data.proveedor_mensajeria_id)
+                console.log(sms)
+                if (sms !== undefined) {
+                    return { nombre: "Enviado correctamente" };
+                }
+                else {
+                    return { error: "no se pudo enviar el mensaje", error_code:"018" };
+                }
         }
     }
 
-    async sendSMS() {
-        return { nombre: "En construcción" };
+    async sendSMS(usuarios: any, proveedor_mensajeria_id: number) {
+
+        let apiInstance = new SibApiV3Sdk1.TransactionalSMSApi();
+        let apiKey = apiInstance.apiClient.authentications['api-key'];
+
+
+        let parametroLlave = await this.prismaService.proveedoresMensajeriaParametrosValores.findFirst({
+            where: {
+                ProveedoresMensajeria: {
+                    proveedor_mensajeria_id: proveedor_mensajeria_id
+                }, ProveedoresMensajeriaParametros: { nombre: "llave" }
+            },
+            select: { valor: true }
+        });
+
+        apiKey.apiKey = parametroLlave.valor
+
+        let sendTransacSms = new SibApiV3Sdk1.SendTransacSms();
+
+        sendTransacSms = {
+            "sender": "Tiresia",
+            "recipient": usuarios.celular,
+            "content": "Enter this code:CCJJG8 to validate your account",
+        };
+
+        try {
+            let sendinBlue_SMS = await apiInstance.sendTransacSms(sendTransacSms);
+            console.log(sendinBlue_SMS)
+
+        } catch (error) {
+            console.log(JSON.stringify(error))
+        }
+        // apiInstance.sendTransacSms(sendTransacSms).then(function(data) {
+        //     console.log('API called successfully. Returned data: ' + JSON.stringify(data));
+        //   }, function(error) {
+        //     console.error(error);
+        //   });
     }
 
     async sendinBlueMail(usuarios: any, params: any, proveedor_mensajeria_id: number, nombre: string) {
@@ -141,7 +192,7 @@ export class ProveedoresMensajeriaService {
 
     async saveCorreosEnviados(usuarios: any, sendinBlue_Mail: any, sendSmtpEmail: any) {
 
-        if(sendinBlue_Mail.response.statusCode == 400){
+        if (sendinBlue_Mail.response.statusCode == 400) {
             sendinBlue_Mail.body.messageId = null
         }
 
