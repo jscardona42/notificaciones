@@ -2,6 +2,12 @@ import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { Module } from '@nestjs/common';
 import { GraphQLModule } from '@nestjs/graphql';
 import { join } from 'path';
+import { NotificacionesResolver } from './modules/Notificaciones/notificaciones.resolver';
+import { NotificacionesService } from './modules/Notificaciones/notificaciones.service';
+import { PlantillasResolver } from './modules/Plantillas/plantillascorreo.resolver';
+import { PlantillasService } from './modules/Plantillas/plantillascorreo.service';
+import { PlantillasNotificacionesResolver } from './modules/PlantillasNotificaciones/plantillasnotificaciones.resolver';
+import { PlantillasNotificacionesService } from './modules/PlantillasNotificaciones/plantillasnotificaciones.service';
 import { ProveedoresMensajeriaController } from './modules/ProveedoresMensajeria/proveedoresmensajeria.controller';
 import { ProveedoresMensajeriaResolver } from './modules/ProveedoresMensajeria/proveedoresmensajeria.resolver';
 import { ProveedoresMensajeriaService } from './modules/ProveedoresMensajeria/proveedoresmensajeria.service';
@@ -25,6 +31,6 @@ import { PrismaService } from './prisma.service';
     }),
   ],
   controllers: [ProveedoresMensajeriaController],
-  providers: [PrismaService, ProveedoresMensajeriaService, ProveedoresMensajeriaResolver,  ProveedoresMensajeriaParametrosValoresService, ProveedoresMensajeriaParametrosValoresResolver],
+  providers: [PrismaService, ProveedoresMensajeriaService, ProveedoresMensajeriaResolver,  ProveedoresMensajeriaParametrosValoresService, ProveedoresMensajeriaParametrosValoresResolver, PlantillasNotificacionesService, PlantillasNotificacionesResolver, PlantillasService, PlantillasResolver, NotificacionesService, NotificacionesResolver],
 })
 export class AppModule { }
