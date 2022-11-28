@@ -2,6 +2,33 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+type PlantillasNotificaciones {
+  plantilla_notificacion_id: Float!
+  titulo: String!
+  icono: Float!
+  cuerpo_notificacion: String!
+  vinculo: String!
+}
+
+type Notificaciones {
+  notificacion_id: Float!
+  fecha_generacion: String!
+  fecha_leido: String
+  usuario_destino: Float!
+  leido: String!
+  plantilla_notificacion_id: String!
+  PlantillasNotificaciones: PlantillasNotificaciones!
+}
+
+type Plantillas {
+  plantilla_id: Float!
+  codigo: String!
+  nombre: String!
+  asunto: String!
+  cuerpo: String!
+  descripcion: String!
+}
+
 type ProveedoresMensajeriaParametros {
   pro_men_parametro_id: Float!
   nombre: String!
@@ -33,6 +60,13 @@ type Query {
   getProveedorMensajeriaById(proveedor_mensajeria_id: Float!): ProveedoresMensajeria!
   getProveedoresMensajeriaParametrosValores: [ProveedoresMensajeriaParametrosValores!]!
   getProveedorMensajeriaParametroValorById(pro_men_parametro_valor_id: Float!): ProveedoresMensajeriaParametrosValores!
+  getPlantillasNotificaciones: [PlantillasNotificaciones!]!
+  getPlantillaNotificacionById(plantilla_notificacion_id: Float!): PlantillasNotificaciones!
+  getPlantillas: [Plantillas!]!
+  getPlantillaById(plantilla_id: Float!): Plantillas!
+  getNotificaciones: [Notificaciones!]!
+  getNotificacionById(notificacion_id: Float!): Notificaciones!
+  getNotificacionesByUserId(usuario_destino: Float!): [Notificaciones!]!
 }
 
 type Mutation {
@@ -43,6 +77,15 @@ type Mutation {
   createProveedoresMensajeriaParametrosValores(data: CreateProveedoresMensajeriaParametrosValoresInput!): ProveedoresMensajeriaParametrosValores!
   updateProveedoresMensajeriaParametrosValores(data: UpdateProveedoresMensajeriaParametrosValoresInput!): ProveedoresMensajeriaParametrosValores!
   deleteProveedoresMensajeriaParametrosValores(pro_men_parametro_valor_id: Float!): ProveedoresMensajeriaParametrosValores!
+  createPlantillasNotificaciones(data: CreatePlantillasNotificacionesInput!): PlantillasNotificaciones!
+  updatePlantillasNotificaciones(data: UpdatePlantillasNotificacionesInput!): PlantillasNotificaciones!
+  deletePlantillaNotificacion(plantilla_notificacion_id: Float!): PlantillasNotificaciones!
+  createPlantilla(data: CreatePlantillaInput!): Plantillas!
+  updatePlantilla(data: UpdatePlantillaInput!): Plantillas!
+  deletePlantilla(plantilla_id: Float!): Plantillas!
+  createNotificaciones(data: CreateNotificacionesInput!): Notificaciones!
+  updateNotificaciones(data: UpdateNotificacionesInput!): Notificaciones!
+  checkNotificaciones(usuario_destino: Float!): Notificaciones!
 }
 
 input CreateProveedoresMensajeriaInput {
@@ -89,4 +132,50 @@ input UpdateProveedoresMensajeriaParametrosValoresInput {
   proveedor_mensajeria_id: Float
   pro_mensajeria_parametro_id: Float
   valor: String
+}
+
+input CreatePlantillasNotificacionesInput {
+  titulo: String!
+  cuerpo_notificacion: String!
+  icono: String!
+  vinculo: String!
+}
+
+input UpdatePlantillasNotificacionesInput {
+  plantilla_notificacion_id: Float!
+  titulo: String
+  cuerpo_notificacion: String
+  icono: String
+  vinculo: String
+}
+
+input CreatePlantillaInput {
+  codigo: String!
+  nombre: String!
+  asunto: String!
+  cuerpo: String!
+  descripcion: String!
+}
+
+input UpdatePlantillaInput {
+  plantilla_id: Float!
+  codigo: String!
+  nombre: String!
+  asunto: String!
+  cuerpo: String!
+  descripcion: String!
+}
+
+input CreateNotificacionesInput {
+  usuario_destino: Float!
+  plantilla_notificacion_id: Float!
+}
+
+input UpdateNotificacionesInput {
+  notificacion_id: Float!
+  fecha_generacion: String
+  fehca_leido: String
+  usuario_destino: Float
+  leido: Boolean
+  plantilla_notificacion_id: Float
 }
