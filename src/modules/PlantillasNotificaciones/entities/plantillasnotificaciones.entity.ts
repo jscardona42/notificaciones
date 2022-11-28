@@ -2,23 +2,21 @@ import 'reflect-metadata'
 import { ObjectType, Field } from '@nestjs/graphql'
 
 @ObjectType()
-export class Plantillas {
+export class PlantillasNotificaciones {
 
     @Field(() => Number)
-    plantilla_id: number
+    plantilla_notificacion_id: number
 
     @Field(() => String)
-    codigo: string
+    titulo: string
+
+    @Field(() => Number)
+    icono: number
 
     @Field(() => String)
-    nombre: string
+    cuerpo_notificacion: string
 
     @Field(() => String)
-    asunto: string
+    vinculo: string
 
-    @Field(() => String)
-    cuerpo: string
-
-    @Field(() => String)
-    descripcion: string
 }
