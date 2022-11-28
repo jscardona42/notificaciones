@@ -81,15 +81,15 @@ export class ProveedoresMensajeriaService {
 
     async sendNotificacion(data: MessageInput) {
 
-        if(data.usuarios == undefined){
-            return { error: "no se encontro usuario", error_code:"017"};
+        if (data.usuarios == undefined) {
+            return { error: "no se encontro usuario", error_code: "017" };
         }
         let usuarios = JSON.parse(data.usuarios)
         let params: any
-        if(data.params !== undefined){
+        if (data.params !== undefined) {
             params = JSON.parse(data.params);
         }
-        
+
         switch (data.proveedor_mensajeria_id) {
             case 1:
                 let info = await this.sendinBlueMail(usuarios, params, data.proveedor_mensajeria_id, data.nombre)
@@ -97,7 +97,7 @@ export class ProveedoresMensajeriaService {
                     return { nombre: "Enviado correctamente" };
                 }
                 else {
-                    return { error: "no se pudo enviar el mensaje", error_code:"018"};
+                    return { error: "no se pudo enviar el mensaje", error_code: "018" };
                 }
             case 2:
                 let sms = await this.sendSMS(usuarios, data.proveedor_mensajeria_id)
@@ -106,7 +106,7 @@ export class ProveedoresMensajeriaService {
                     return { nombre: "Enviado correctamente" };
                 }
                 else {
-                    return { error: "no se pudo enviar el mensaje", error_code:"018" };
+                    return { error: "no se pudo enviar el mensaje", error_code: "018" };
                 }
         }
     }
@@ -152,6 +152,10 @@ export class ProveedoresMensajeriaService {
 
     async sendinBlueMail(usuarios: any, params: any, proveedor_mensajeria_id: number, nombre: string) {
 
+        if(nombre == undefined || usuarios == undefined || proveedor_mensajeria_id == undefined){
+            return { error: "Debe suministrar los datos completos" }; 
+        }
+        
         let apiInstance = new SibApiV3Sdk.TransactionalEmailsApi();
         let apiKey = apiInstance.authentications['apiKey'];
 
@@ -196,6 +200,7 @@ export class ProveedoresMensajeriaService {
             sendinBlue_Mail.body.messageId = null
         }
 
+        
         return this.prismaService.correosEnviados.create({
             data: {
                 empresa_id: 1,
@@ -216,9 +221,9 @@ export class ProveedoresMensajeriaService {
         await this.prismaService.correosEnviadosTrazabilidad.create({
             data: {
                 evento: data.event,
-                mensaje_id: JSON.stringify(data.message_id),
+                mensaje_id: JSON.stringify(data["message-id"]),
                 fecha_estado: new Date(data.date),
-                respuesta: data.subject
+                respuesta: JSON.stringify(data)
             }
         })
     }

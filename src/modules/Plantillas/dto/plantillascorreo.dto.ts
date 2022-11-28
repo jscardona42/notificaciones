@@ -3,7 +3,7 @@ import { Field, InputType } from '@nestjs/graphql'
 import { IsNotEmpty } from 'class-validator'
 
 @InputType()
-export class CreatePlantillaInput {
+export class CreatePlantillaCorreoInput {
 
     @Field(() => String)
     @IsNotEmpty()
@@ -27,11 +27,11 @@ export class CreatePlantillaInput {
 }
 
 @InputType()
-export class UpdatePlantillaInput {
+export class UpdatePlantillaCorreoInput {
 
     @Field(() => Number)
     @IsNotEmpty()
-    plantilla_id: number
+    plantilla_correo_id: number
 
     @Field(() => String)
     codigo?: string
