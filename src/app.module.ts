@@ -4,8 +4,8 @@ import { GraphQLModule } from '@nestjs/graphql';
 import { join } from 'path';
 import { NotificacionesResolver } from './modules/Notificaciones/notificaciones.resolver';
 import { NotificacionesService } from './modules/Notificaciones/notificaciones.service';
-import { PlantillasResolver } from './modules/Plantillas/plantillascorreo.resolver';
-import { PlantillasService } from './modules/Plantillas/plantillascorreo.service';
+import { PlantillasCorreoResolver } from './modules/Plantillas/plantillascorreo.resolver';
+import { PlantillasCorreoService } from './modules/Plantillas/plantillascorreo.service';
 import { PlantillasNotificacionesResolver } from './modules/PlantillasNotificaciones/plantillasnotificaciones.resolver';
 import { PlantillasNotificacionesService } from './modules/PlantillasNotificaciones/plantillasnotificaciones.service';
 import { ProveedoresMensajeriaController } from './modules/ProveedoresMensajeria/proveedoresmensajeria.controller';
@@ -31,6 +31,6 @@ import { PrismaService } from './prisma.service';
     }),
   ],
   controllers: [ProveedoresMensajeriaController],
-  providers: [PrismaService, ProveedoresMensajeriaService, ProveedoresMensajeriaResolver,  ProveedoresMensajeriaParametrosValoresService, ProveedoresMensajeriaParametrosValoresResolver, PlantillasNotificacionesService, PlantillasNotificacionesResolver, PlantillasService, PlantillasResolver, NotificacionesService, NotificacionesResolver],
+  providers: [PrismaService, ProveedoresMensajeriaService, ProveedoresMensajeriaResolver, ProveedoresMensajeriaParametrosValoresService, ProveedoresMensajeriaParametrosValoresResolver, PlantillasNotificacionesService, PlantillasNotificacionesResolver, PlantillasCorreoService, PlantillasCorreoResolver, NotificacionesService, NotificacionesResolver],
 })
 export class AppModule { }
