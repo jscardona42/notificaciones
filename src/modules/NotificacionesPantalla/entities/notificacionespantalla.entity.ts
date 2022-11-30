@@ -8,11 +8,11 @@ export class NotificacionesPantalla {
     @Field(() => Number)
     notificacion_pantalla_id: number
 
-    @Field(() => String)
-    fecha_generacion: string
+    @Field(() => Date)
+    fecha_generacion: Date
 
-    @Field(() => String, { nullable: true })
-    fecha_leido?: string
+    @Field(() => Date, { nullable: true })
+    fecha_leido?: Date
 
     @Field(() => Number)
     usuario_destino: number

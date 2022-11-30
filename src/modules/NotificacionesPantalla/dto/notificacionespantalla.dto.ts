@@ -21,11 +21,11 @@ export class UpdateNotificacionesPantallaInput {
     @IsNotEmpty()
     notificacion_pantalla_id: number
 
-    @Field(() => String, { nullable: true })
-    fecha_generacion?: string
+    @Field(() => Date, { nullable: true })
+    fecha_generacion?: Date
 
-    @Field(() => String, { nullable: true })
-    fehca_leido?: string
+    @Field(() => Date, { nullable: true })
+    fecha_leido?: Date
 
     @Field(() => Number, { nullable: true })
     usuario_destino?: number

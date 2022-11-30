@@ -17,7 +17,7 @@ export class NotificacionesResolver {
     }
 
     @Mutation(() => NotificacionesRespuesta)
-    async sendSms(@Args("data") data: NotificacionesSmsInput): Promise<any> {
+    async sendNotificacionSms(@Args("data") data: NotificacionesSmsInput): Promise<any> {
         return this.notificacionesService.sendNotificacionSms(data);
     }
 }

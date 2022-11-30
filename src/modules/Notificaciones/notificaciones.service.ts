@@ -12,17 +12,16 @@ export class NotificacionesService {
 
     async sendNotificacionCorreo(data: NotificacionesCorreoInput) {
 
-        if (data.usuario == undefined) {
-            return { error: "No se encontraron datos del usuario", error_code: "017" };
+        if (data.correo == undefined || data.nombre_usuario == undefined) {
+            return { error: "Debe suministrar los datos completos", error_code: "017" };
         }
-        let usuarios = JSON.parse(data.usuario);
         let params: any;
 
         if (data.params !== undefined) {
             params = JSON.parse(data.params);
         }
 
-        let info = await this.sendMail(usuarios, params, 1, data.nombre_plantilla)
+        let info = await this.sendMail(data, params, 1, data.nombre_plantilla)
         if (info.correo_enviado_id !== undefined) {
             return { notificacion: "Enviado correctamente" };
         }
@@ -33,12 +32,11 @@ export class NotificacionesService {
 
     async sendNotificacionSms(data: NotificacionesSmsInput) {
 
-        if (data.usuario == undefined) {
-            return { error: "No se encontraron datos del usuario", error_code: "017" };
+        if (data.telefono == undefined) {
+            return { error: "Debe suministrar los datos completos", error_code: "017" };
         }
-        let usuarios = JSON.parse(data.usuario);
 
-        let sms = await this.sendSMS(usuarios, 2);
+        let sms = await this.sendSMS(data, 2);
         if (sms !== undefined) {
             return { notificacion: "Enviado correctamente" };
         }
@@ -65,11 +63,7 @@ export class NotificacionesService {
         return apiKey;
     }
 
-    async sendMail(usuarios: any, params: any, proveedor_mensajeria_id: number, nombre: string) {
-
-        if (nombre == undefined || usuarios == undefined || proveedor_mensajeria_id == undefined) {
-            return { error: "Debe suministrar los datos completos", error_code: "019" };
-        }
+    async sendMail(data: any, params: any, proveedor_mensajeria_id: number, nombre_plantilla: string) {
 
         let apiInstance = new SibApiV3Sdk.TransactionalEmailsApi();
         await this.buildApiKey(proveedor_mensajeria_id, apiInstance);
@@ -78,27 +72,27 @@ export class NotificacionesService {
         let offset = 0;
 
         let sendinblue = await apiInstance.getSmtpTemplates(true, limit, offset);
-        const templateInfo = sendinblue.response.body.templates.filter(data => data.name === nombre);
+        const templateInfo = sendinblue.response.body.templates.filter(data => data.name === nombre_plantilla);
 
         let sendSmtpEmail = new SibApiV3Sdk.SendSmtpEmail();
 
         sendSmtpEmail.templateId = templateInfo[0].id;
         sendSmtpEmail.sender = { email: templateInfo[0].sender.email, name: templateInfo[0].sender.name };
-        sendSmtpEmail.to = [{ email: usuarios.correo, name: usuarios.nombre_usuario }];
+        sendSmtpEmail.to = [{ email: data.correo, name: data.nombre_usuario }];
         sendSmtpEmail.params = params;
 
         try {
             let sendinBlue_Mail = await apiInstance.sendTransacEmail(sendSmtpEmail);
-            return this.saveCorreosEnviados(usuarios, sendinBlue_Mail, sendSmtpEmail);
+            return this.saveCorreosEnviados(data, sendinBlue_Mail, sendSmtpEmail);
 
         } catch (error) {
             console.log(JSON.stringify(error))
-            this.saveCorreosEnviados(usuarios, error, sendSmtpEmail);
+            this.saveCorreosEnviados(data, error, sendSmtpEmail);
             return error;
         }
     }
 
-    async sendSMS(usuario: any, proveedor_mensajeria_id: number) {
+    async sendSMS(data: any, proveedor_mensajeria_id: number) {
 
         let apiInstance = new SibApiV3Sdk.TransactionalSMSApi();
         await this.buildApiKey(proveedor_mensajeria_id, apiInstance);
@@ -107,7 +101,7 @@ export class NotificacionesService {
 
         sendTransacSms = {
             "sender": "Tiresia",
-            "recipient": usuario.celular,
+            "recipient": data.telefono,
             "content": "Enter this code:CCJJG8 to validate your account",
         };
 
@@ -120,7 +114,7 @@ export class NotificacionesService {
         }
     }
 
-    async saveCorreosEnviados(usuarios: any, sendinBlue_Mail: any, sendSmtpEmail: any) {
+    async saveCorreosEnviados(data: any, sendinBlue_Mail: any, sendSmtpEmail: any) {
 
         if (sendinBlue_Mail.response.statusCode == 400) {
             sendinBlue_Mail.body.messageId = null;
@@ -130,7 +124,7 @@ export class NotificacionesService {
             data: {
                 empresa_id: 1,
                 fecha_envio: new Date(JSON.stringify(sendinBlue_Mail.response.headers.date)),
-                correo_destino: usuarios.correo,
+                correo_destino: data.correo,
                 indicador_entregado: true,
                 mensaje_id: JSON.stringify(sendinBlue_Mail.body.messageId),
                 origen_peticion: "admin",

@@ -35,7 +35,6 @@ export class NotificacionesPantallaService {
         return this.prismaService.notificacionesPantalla.create({
             data: {
                 fecha_generacion: new Date(),
-                fecha_leido: null,
                 usuario_destino: data.usuario_destino,
                 plantilla_pantalla_id: data.plantilla_pantalla_id
             }
@@ -61,16 +60,28 @@ export class NotificacionesPantallaService {
         return this.prismaService.notificacionesPantalla.findMany({
             where: { usuario_destino: usuario_destino },
             orderBy: { notificacion_pantalla_id: "asc" }
-        })
+        });
     }
 
     async checkNotificacionesPantalla(usuario_destino: number) {
 
-        return this.prismaService.notificacionesPantalla.updateMany({
-            where: { usuario_destino: usuario_destino },
+        let notificaciones = await this.getNotificacionesPantallaByUserId(usuario_destino);
+
+        if (notificaciones.length == 0) {
+            return [];
+        }
+
+        let count = await this.prismaService.notificacionesPantalla.updateMany({
+            where: { usuario_destino: usuario_destino, leido: false },
             data: {
-                leido: true
-            }
-        })
+                leido: true,
+                fecha_leido: new Date()
+            },
+        });
+
+        return this.prismaService.notificacionesPantalla.findMany({
+            orderBy: { notificacion_pantalla_id: "desc" },
+            take: count.count
+        });
     }
 }

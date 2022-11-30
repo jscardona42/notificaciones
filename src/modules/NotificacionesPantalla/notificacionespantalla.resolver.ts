@@ -35,7 +35,7 @@ export class NotificacionesPantallaResolver {
         return this.notificacionesPantallaService.getNotificacionesPantallaByUserId(usuario_destino);
     }
 
-    @Mutation(() => NotificacionesPantalla)
+    @Mutation(() => [NotificacionesPantalla])
     async checkNotificacionesPantalla(@Args("usuario_destino") usuario_destino: number): Promise<any> {
         return this.notificacionesPantallaService.checkNotificacionesPantalla(usuario_destino);
     }
