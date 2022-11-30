@@ -1,7 +1,7 @@
 import 'reflect-metadata'
 import { ObjectType, Field, registerEnumType } from '@nestjs/graphql'
 import { MedioMensajeria } from '@prisma/client'
-import { ProveedoresMensajeriaParametros } from './proveedormensajeriaparametros.entity'
+import { ProveedoresMensajeriaParametros } from '../../ProveedoresMensajeriaParametros/entities/proveedoresmensajeriaparametros.entity'
 
 registerEnumType(MedioMensajeria, {
     name: 'MedioMensajeria'
