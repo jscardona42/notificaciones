@@ -1,38 +1,34 @@
-import 'reflect-metadata'
-import { Field, InputType } from '@nestjs/graphql'
-import { IsNotEmpty } from 'class-validator'
+import { Field, InputType, Int } from "@nestjs/graphql"
+import { IsNotEmpty } from "class-validator"
 
 @InputType()
-export class CreateNotificacionesInput {
+export class NotificacionesCorreoInput {
 
-    @Field(() => Number)
+    @Field(() => String)
     @IsNotEmpty()
-    usuario_destino: number
+    correo: string
 
-    @Field(() => Number)
+    @Field(() => String)
     @IsNotEmpty()
-    plantilla_notificacion_id: number
+    nombre_usuario: string
+
+    @Field(() => String, { nullable: true })
+    params: string
+
+    @Field(() => String, { nullable: true })
+    nombre_plantilla?: string
+
+    @Field(() => Int, { nullable: true })
+    plantilla_correo_id?: number
 }
 
 @InputType()
-export class UpdateNotificacionesInput {
+export class NotificacionesSmsInput {
 
-    @Field(() => Number)
+    @Field(() => String)
     @IsNotEmpty()
-    notificacion_id: number
+    telefono: string
 
-    @Field(() => String, { nullable: true })
-    fecha_generacion?: string
-
-    @Field(() => String, { nullable: true })
-    fehca_leido?: string
-
-    @Field(() => Number, { nullable: true })
-    usuario_destino?: number
-
-    @Field(() => Boolean, { nullable: true })
-    leido?: boolean
-
-    @Field(() => Number, { nullable: true })
-    plantilla_notificacion_id?: number
+    @Field(() => Int)
+    plantilla_sms_id: number
 }

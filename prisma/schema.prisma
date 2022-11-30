@@ -95,27 +95,27 @@ model ProveedoresMensajeriaParametros {
   @@index([pro_mensajeria_parametro_id], name: "idx_pro_mensajeria_parametro_id")
 }
 
-model PlantillasNotificaciones {
-  plantilla_notificacion_id Int              @id(map: "pk_plantilla_notificacion_id") @default(autoincrement())
-  titulo                    String           @db.VarChar(255)
-  icono                     String           @db.VarChar(255)
-  cuerpo_notificacion       String           @db.VarChar(255)
-  vinculo                   String           @db.VarChar(255)
-  Notificaciones            Notificaciones[]
+model PlantillasPantalla {
+  plantilla_pantalla_id  Int                      @id(map: "pk_plantilla_pantalla_id") @default(autoincrement())
+  titulo                 String                   @db.VarChar(255)
+  icono                  String                   @db.VarChar(255)
+  cuerpo_notificacion    String                   @db.VarChar(255)
+  vinculo                String                   @db.VarChar(255)
+  NotificacionesPantalla NotificacionesPantalla[]
 
-  @@index([plantilla_notificacion_id], name: "idx_plantilla_notificacion_id")
+  @@index([plantilla_pantalla_id], name: "idx_plantilla_pantalla_id")
 }
 
-model Notificaciones {
-  notificacion_id           Int                      @id(map: "pk_notificacion_id") @default(autoincrement())
-  fecha_generacion          DateTime
-  fecha_leido               DateTime?
-  usuario_destino           Int
-  leido                     Boolean                  @default(false)
-  plantilla_notificacion_id Int
-  PlantillasNotificaciones  PlantillasNotificaciones @relation(fields: [plantilla_notificacion_id], references: [plantilla_notificacion_id], onDelete: NoAction, map: "fk_plantilla_notificacion_id")
+model NotificacionesPantalla {
+  notificacion_pantalla_id Int                @id(map: "pk_notificacion_pantalla_id") @default(autoincrement())
+  fecha_generacion         DateTime
+  fecha_leido              DateTime?
+  usuario_destino          Int
+  leido                    Boolean            @default(false)
+  plantilla_pantalla_id    Int
+  PlantillasPantalla       PlantillasPantalla @relation(fields: [plantilla_pantalla_id], references: [plantilla_pantalla_id], onDelete: NoAction, map: "fk_plantilla_pantalla_id")
 
-  @@index([notificacion_id], name: "idx_notificacion_id")
+  @@index([notificacion_pantalla_id], name: "idx_notificacion_pantalla_id")
 }
 
 enum MedioMensajeria {

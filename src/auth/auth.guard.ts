@@ -27,8 +27,10 @@ export class GqlAuthGuard extends AuthGuard('jwt') {
           return true;
         }
       } catch (error) {
-        console.log(error);
+        throw new UnauthorizedException("Unauthorized");
       }
+    } else {
+      throw new UnauthorizedException("Unauthorized");
     }
   }
 
@@ -38,4 +40,3 @@ export class GqlAuthGuard extends AuthGuard('jwt') {
     req.userId = userId;
   }
 }
-

@@ -1,75 +1,148 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../prisma.service';
-import { PlantillasNotificacionesService } from '../PlantillasNotificaciones/plantillasnotificaciones.service';
-import { CreateNotificacionesInput, UpdateNotificacionesInput } from './dto/notificaciones.dto';
+import { NotificacionesCorreoInput, NotificacionesSmsInput } from './dto/notificaciones.dto';
+const SibApiV3Sdk = require('sib-api-v3-typescript');
+
 
 @Injectable()
 export class NotificacionesService {
-    
     constructor(
         private prismaService: PrismaService,
-        private plantillasNotificacionesService: PlantillasNotificacionesService
     ) { }
 
-    async getNotificaciones(): Promise<any> {
-        return this.prismaService.notificaciones.findMany({
-            orderBy: { notificacion_id: "asc" }
-        });
-    }
+    async sendNotificacionCorreo(data: NotificacionesCorreoInput) {
 
-    async getNotificacionById(notificacion_id: number): Promise<any> {
-        let notificacion = await this.prismaService.notificaciones.findUnique({
-            where: { notificacion_id: notificacion_id }
-        })
-
-        if (notificacion === null) {
-            throw new UnauthorizedException(`La notificacion con id ${notificacion_id} no existe`);
+        if (data.correo == undefined || data.nombre_usuario == undefined) {
+            return { error: "Debe suministrar los datos completos", error_code: "017" };
         }
-        return notificacion;
+        let params: any;
+
+        if (data.params !== undefined) {
+            params = JSON.parse(data.params);
+        }
+
+        let info = await this.sendMail(data, params, 1, data.nombre_plantilla)
+        if (info.correo_enviado_id !== undefined) {
+            return { notificacion: "Enviado correctamente" };
+        }
+        else {
+            return { error: "No se pudo enviar el mensaje", error_code: "018" };
+        }
     }
 
-    async createNotificaciones(data: CreateNotificacionesInput): Promise<any> {
+    async sendNotificacionSms(data: NotificacionesSmsInput) {
 
-        await this.plantillasNotificacionesService.getPlantillaNotificacionById(data.plantilla_notificacion_id)
+        if (data.telefono == undefined) {
+            return { error: "Debe suministrar los datos completos", error_code: "017" };
+        }
 
-        return this.prismaService.notificaciones.create({
-            data: {
-                fecha_generacion: new Date(),
-                fecha_leido: null,
-                usuario_destino: data.usuario_destino,
-                plantilla_notificacion_id: data.plantilla_notificacion_id
-            }
+        let sms = await this.sendSMS(data, 2);
+        if (sms !== undefined) {
+            return { notificacion: "Enviado correctamente" };
+        }
+        else {
+            return { error: "No se pudo enviar el mensaje", error_code: "018" };
+        }
+    }
+
+    async buildApiKey(proveedor_mensajeria_id: number, apiInstance: any) {
+
+        let apiKey = apiInstance.authentications['apiKey'];
+
+        let parametroLlave = await this.prismaService.proveedoresMensajeriaParametrosValores.findFirst({
+            where: {
+                ProveedoresMensajeria: {
+                    proveedor_mensajeria_id: proveedor_mensajeria_id
+                }, ProveedoresMensajeriaParametros: { nombre: "llave" }
+            },
+            select: { valor: true }
         });
+
+        apiKey.apiKey = parametroLlave.valor;
+
+        return apiKey;
     }
 
-    async updateNotificaciones(data: UpdateNotificacionesInput): Promise<any> {
-        
-        await this.plantillasNotificacionesService.getPlantillaNotificacionById(data.plantilla_notificacion_id)
-        
-        await this.getNotificacionById(data.notificacion_id);
+    async sendMail(data: any, params: any, proveedor_mensajeria_id: number, nombre_plantilla: string) {
 
-        return this.prismaService.notificaciones.update({
-            where: { notificacion_id: data.notificacion_id },
+        let apiInstance = new SibApiV3Sdk.TransactionalEmailsApi();
+        await this.buildApiKey(proveedor_mensajeria_id, apiInstance);
+
+        let limit = 50;
+        let offset = 0;
+
+        let sendinblue = await apiInstance.getSmtpTemplates(true, limit, offset);
+        const templateInfo = sendinblue.response.body.templates.filter(data => data.name === nombre_plantilla);
+
+        let sendSmtpEmail = new SibApiV3Sdk.SendSmtpEmail();
+
+        sendSmtpEmail.templateId = templateInfo[0].id;
+        sendSmtpEmail.sender = { email: templateInfo[0].sender.email, name: templateInfo[0].sender.name };
+        sendSmtpEmail.to = [{ email: data.correo, name: data.nombre_usuario }];
+        sendSmtpEmail.params = params;
+
+        try {
+            let sendinBlue_Mail = await apiInstance.sendTransacEmail(sendSmtpEmail);
+            return this.saveCorreosEnviados(data, sendinBlue_Mail, sendSmtpEmail);
+
+        } catch (error) {
+            console.log(JSON.stringify(error))
+            this.saveCorreosEnviados(data, error, sendSmtpEmail);
+            return error;
+        }
+    }
+
+    async sendSMS(data: any, proveedor_mensajeria_id: number) {
+
+        let apiInstance = new SibApiV3Sdk.TransactionalSMSApi();
+        await this.buildApiKey(proveedor_mensajeria_id, apiInstance);
+
+        let sendTransacSms = new SibApiV3Sdk.SendTransacSms();
+
+        sendTransacSms = {
+            "sender": "Tiresia",
+            "recipient": data.telefono,
+            "content": "Enter this code:CCJJG8 to validate your account",
+        };
+
+        try {
+            let sendinBlue_SMS = await apiInstance.sendTransacSms(sendTransacSms);
+            console.log(sendinBlue_SMS)
+
+        } catch (error) {
+            console.log(JSON.stringify(error))
+        }
+    }
+
+    async saveCorreosEnviados(data: any, sendinBlue_Mail: any, sendSmtpEmail: any) {
+
+        if (sendinBlue_Mail.response.statusCode == 400) {
+            sendinBlue_Mail.body.messageId = null;
+        }
+
+        return this.prismaService.correosEnviados.create({
             data: {
-                ...data
+                empresa_id: 1,
+                fecha_envio: new Date(JSON.stringify(sendinBlue_Mail.response.headers.date)),
+                correo_destino: data.correo,
+                indicador_entregado: true,
+                mensaje_id: JSON.stringify(sendinBlue_Mail.body.messageId),
+                origen_peticion: "admin",
+                fecha_recibido: new Date(),
+                respuesta: JSON.stringify(sendinBlue_Mail.response),
+                peticion: JSON.stringify(sendSmtpEmail),
             }
-        });
-    }
-
-    async getNotificacionesByUserId(usuario_destino: number){
-
-        return this.prismaService.notificaciones.findMany({
-            where:{ usuario_destino: usuario_destino },
-            orderBy: { notificacion_id: "asc" }
         })
     }
 
-    async checkNotificaciones(usuario_destino: number){
+    async saveEventos(data: any) {
 
-        return this.prismaService.notificaciones.updateMany({
-            where:{ usuario_destino: usuario_destino },
-            data:{
-                leido: true
+        await this.prismaService.correosEnviadosTrazabilidad.create({
+            data: {
+                evento: data.event,
+                mensaje_id: JSON.stringify(data["message-id"]),
+                fecha_estado: new Date(data.date),
+                respuesta: JSON.stringify(data)
             }
         })
     }

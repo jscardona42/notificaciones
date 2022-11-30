@@ -2,7 +2,7 @@ import { Test } from '@nestjs/testing';
 import { ProveedoresMensajeriaResolver } from './proveedoresmensajeria.resolver';
 import { ProveedoresMensajeriaService } from './proveedoresmensajeria.service';
 
-describe('Icono Resolver', () => {
+describe('ProveedorMensajeria Resolver', () => {
     let proveedoresMensajeriaResolver: ProveedoresMensajeriaResolver;
     let proveedoresMensajeriaService: ProveedoresMensajeriaService;
 
