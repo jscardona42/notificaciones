@@ -13,16 +13,15 @@ export class CreateProveedoresMensajeriaParametroInput {
     @IsNotEmpty()
     valor: string
 
-    @Field(() => String)
-    @IsNotEmpty()
-    descripcion: string
+    @Field(() => String, { nullable: true })
+    descripcion?: string
 }
 
 @InputType()
 export class UpdateProveedorMensajeriaParametroInput {
 
     @Field(() => Int)
-    proveedor_mensajeria_parametro_id: number
+    pro_mensajeria_parametro_id: number
 
     @Field(() => String, { nullable: true })
     nombre?: string
@@ -32,20 +31,4 @@ export class UpdateProveedorMensajeriaParametroInput {
 
     @Field(() => String, { nullable: true })
     descripcion?: string
-}
-
-@InputType()
-export class MessageInput {
-
-    @Field(() => Number, { nullable: true })
-    proveedor_mensajeria_id: number
-
-    @Field(() => String, { nullable: true })
-    usuarios: string
-
-    @Field(() => String, { nullable: true })
-    params: string
-
-    @Field(() => String, { nullable: true })
-    nombre: string
 }
