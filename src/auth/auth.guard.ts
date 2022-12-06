@@ -15,7 +15,6 @@ export class GqlAuthGuard extends AuthGuard('jwt') {
 
   async canActivate(context: ExecutionContext): Promise<any> {
     const ctx = GqlExecutionContext.create(context);
-    let query = context.getHandler().name;
     let req = ctx.getContext().req;
 
     if (req.headers.authorization_url !== undefined) {
@@ -27,9 +26,19 @@ export class GqlAuthGuard extends AuthGuard('jwt') {
           return true;
         }
       } catch (error) {
-        throw new UnauthorizedException("Unauthorized");
+        console.log(error);
       }
-    } else {
+    }
+
+    let authorization = req.headers.authorization;
+
+    authorization = CryptoJS.AES.decrypt(authorization, process.env.KEY_CRYPTO).toString(CryptoJS.enc.Utf8);
+
+    try {
+      jwt.verify(authorization.split(" ")[1], process.env.JWT_SECRET);
+      await this.setUserId(authorization, req);
+      return true;
+    } catch (error) {
       throw new UnauthorizedException("Unauthorized");
     }
   }
