@@ -59,7 +59,8 @@ export class NotificacionesPantallaService {
 
         return this.prismaService.notificacionesPantalla.findMany({
             where: { usuario_destino: usuario_destino },
-            orderBy: { notificacion_pantalla_id: "asc" }
+            orderBy: { notificacion_pantalla_id: "asc" },
+            include: { PlantillasPantalla: true }
         });
     }
 
