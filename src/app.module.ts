@@ -3,9 +3,8 @@ import { Module } from '@nestjs/common';
 import { GraphQLModule } from '@nestjs/graphql';
 import { join } from 'path';
 import { NotificacionesController } from './modules/Notificaciones/notificaciones.controller';
-import { NotificacionesResolver } from './modules/Notificaciones/notificaciones.resolver';
 import { NotificacionesService } from './modules/Notificaciones/notificaciones.service';
-import { NotificacionesPantallaResolver } from './modules/NotificacionesPantalla/notificacionespantalla.resolver';
+import { NotificacionesPantallaController } from './modules/NotificacionesPantalla/notificacionespantalla.controller';
 import { NotificacionesPantallaService } from './modules/NotificacionesPantalla/notificacionespantalla.service';
 import { PlantillasCorreoResolver } from './modules/PlantillasCorreo/plantillascorreo.resolver';
 import { PlantillasCorreoService } from './modules/PlantillasCorreo/plantillascorreo.service';
@@ -31,7 +30,7 @@ import { PrismaService } from './prisma.service';
       autoSchemaFile: join(process.cwd(), "src/schema.gql"),
     }),
   ],
-  controllers: [NotificacionesController],
-  providers: [PrismaService, ProveedoresMensajeriaService, ProveedoresMensajeriaResolver, ProveedoresMensajeriaParametrosService, ProveedoresMensajeriaParametrosService, PlantillasPantallaService, PlantillasPantallaResolver, PlantillasCorreoService, PlantillasCorreoResolver, NotificacionesPantallaService, NotificacionesPantallaResolver, NotificacionesService, NotificacionesResolver],
+  controllers: [NotificacionesController, NotificacionesPantallaController],
+  providers: [PrismaService, ProveedoresMensajeriaService, ProveedoresMensajeriaResolver, ProveedoresMensajeriaParametrosService, ProveedoresMensajeriaParametrosService, PlantillasPantallaService, PlantillasPantallaResolver, PlantillasCorreoService, PlantillasCorreoResolver, NotificacionesPantallaService, NotificacionesService],
 })
 export class AppModule { }
