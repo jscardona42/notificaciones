@@ -13,7 +13,7 @@ export class NotificacionesPantallaController {
         return this.notificacionesPantallaService.getNotificacionesPantalla();
     }
 
-    @Get("getById")
+    @Post("getById")
     async getNotificacionPantallaById(@Body("notificacion_pantalla_id") notificacion_pantalla_id: number): Promise<any> {
         return this.notificacionesPantallaService.getNotificacionPantallaById(notificacion_pantalla_id);
     }
@@ -23,7 +23,7 @@ export class NotificacionesPantallaController {
         return this.notificacionesPantallaService.createNotificacionPantalla(data);
     }
 
-    @Get("getByUsuarioId")
+    @Post("getByUsuarioId")
     async getNotificacionesPantallaByUserId(@Body("usuario_destino") usuario_destino: number) {
         return this.notificacionesPantallaService.getNotificacionesPantallaByUserId(usuario_destino);
     }
