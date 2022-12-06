@@ -17,8 +17,11 @@ export class NotificacionesPantalla {
     @Field(() => Number)
     usuario_destino: number
 
-    @Field(() => String)
-    leido: string
+    @Field(() => Boolean)
+    leido: boolean
+
+    @Field(() => Boolean)
+    visto: boolean
 
     @Field(() => String)
     plantilla_notificacion_id: string

@@ -20,6 +20,7 @@ export class NotificacionesPantallaController {
 
     @Post('create')
     async createNotificacionPantalla(@Body("data") data: CreateNotificacionesPantallaInput): Promise<any> {
+        console.log(data);
         return this.notificacionesPantallaService.createNotificacionPantalla(data);
     }
 
@@ -28,8 +29,13 @@ export class NotificacionesPantallaController {
         return this.notificacionesPantallaService.getNotificacionesPantallaByUserId(usuario_destino);
     }
 
-    @Post("check")
-    async checkNotificacionesPantalla(@Body("usuario_destino") usuario_destino: number) {
-        return this.notificacionesPantallaService.checkNotificacionesPantalla(usuario_destino);
+    @Post("checkvisto")
+    async checkNotificacionesPantallaVisto(@Body("usuario_destino") usuario_destino: number) {
+        return this.notificacionesPantallaService.checkNotificacionesPantallaVisto(usuario_destino);
+    }
+
+    @Post("checkleido")
+    async checkNotificacionesPantallaLeido(@Body("notificacion_pantalla_id") notificacion_pantalla_id: number) {
+        return this.notificacionesPantallaService.checkNotificacionesPantallaLeido(notificacion_pantalla_id);
     }
 } 
