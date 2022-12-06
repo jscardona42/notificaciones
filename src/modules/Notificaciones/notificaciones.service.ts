@@ -23,7 +23,7 @@ export class NotificacionesService {
 
         let info = await this.sendMail(data, params, 1, data.nombre_plantilla)
         if (info.correo_enviado_id !== undefined) {
-            return { notificacion: "Enviado correctamente" };
+            return { notificacion: "Enviado correctamente", statusCode: 200 };
         }
         else {
             return { error: "No se pudo enviar el mensaje", error_code: "018" };
@@ -38,7 +38,7 @@ export class NotificacionesService {
 
         let sms = await this.sendSMS(data, 2);
         if (sms !== undefined) {
-            return { notificacion: "Enviado correctamente" };
+            return { notificacion: "Enviado correctamente", statusCode: 200 };
         }
         else {
             return { error: "No se pudo enviar el mensaje", error_code: "018" };
@@ -59,6 +59,9 @@ export class NotificacionesService {
         });
 
         apiKey.apiKey = parametroLlave.valor;
+
+        // await this.updateWebHook(parametroLlave.valor);
+        // await this.getAllWebhooks(parametroLlave.valor);
 
         return apiKey;
     }
@@ -146,4 +149,43 @@ export class NotificacionesService {
             }
         })
     }
+
+    async getAllWebhooks(api) {
+
+        let apiInstance = new SibApiV3Sdk.WebhooksApi()
+
+        let apiKey = apiInstance.authentications['apiKey'];
+        apiKey.apiKey = api;
+
+        let type = 'transactional';
+
+        apiInstance.getWebhooks(type).then(function (data) {
+            console.log('API called successfully. Returned data: ' + JSON.stringify(data));
+        }, function (error) {
+            console.error(error);
+        });
+    }
+
+    async updateWebHook(api) {
+        let apiInstance = new SibApiV3Sdk.WebhooksApi()
+
+        let apiKey = apiInstance.authentications['apiKey'];
+        apiKey.apiKey = api;
+
+        let webhookId = 676089;
+
+        let updateWebhook = new SibApiV3Sdk.UpdateWebhook();
+
+        updateWebhook.description = 'webhook sendinblue';
+        updateWebhook.url = 'https://preprodclouderp.tiresia.com.co/notificaciones';
+        updateWebhook.events = ['request', 'delivered', 'hardBounce', 'softBounce', 'blocked', 'spam', 'invalid', 'opened'];
+        updateWebhook.type = 'transactional';
+
+        apiInstance.updateWebhook(webhookId, updateWebhook).then(function (data) {
+            console.log('API called successfully. Returned data: ' + JSON.stringify(data));
+        }, function (error) {
+            console.error(error);
+        });
+    }
+
 }
