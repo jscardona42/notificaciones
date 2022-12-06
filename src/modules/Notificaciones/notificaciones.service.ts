@@ -15,13 +15,8 @@ export class NotificacionesService {
         if (data.correo == undefined || data.nombre_usuario == undefined) {
             return { error: "Debe suministrar los datos completos", error_code: "017" };
         }
-        let params: any;
 
-        if (data.params !== undefined) {
-            params = JSON.parse(data.params);
-        }
-
-        let info = await this.sendMail(data, params, 1, data.nombre_plantilla)
+        let info = await this.sendMail(data, data.params, 1, data.nombre_plantilla)
         if (info.correo_enviado_id !== undefined) {
             return { notificacion: "Enviado correctamente", statusCode: 200 };
         }
