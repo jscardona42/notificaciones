@@ -1,5 +1,6 @@
 import { Field, InputType, Int } from "@nestjs/graphql"
 import { IsNotEmpty } from "class-validator"
+import JSON from 'graphql-type-json';
 
 @InputType()
 export class NotificacionesCorreoInput {
@@ -12,8 +13,8 @@ export class NotificacionesCorreoInput {
     @IsNotEmpty()
     nombre_usuario: string
 
-    @Field(() => String, { nullable: true })
-    params: string
+    @Field(() => JSON, { nullable: true })
+    params: JSON
 
     @Field(() => String, { nullable: true })
     nombre_plantilla?: string
