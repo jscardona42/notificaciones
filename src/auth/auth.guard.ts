@@ -32,10 +32,10 @@ export class GqlAuthGuard extends AuthGuard('jwt') {
 
     let authorization = req.headers.authorization;
 
-    authorization = CryptoJS.AES.decrypt(authorization, process.env.KEY_CRYPTO).toString(CryptoJS.enc.Utf8);
+    authorization = CryptoJS.AES.decrypt(authorization.split(" ")[1], process.env.KEY_CRYPTO).toString(CryptoJS.enc.Utf8);
 
     try {
-      jwt.verify(authorization.split(" ")[1], process.env.JWT_SECRET);
+      jwt.verify(authorization, process.env.JWT_SECRET);
       await this.setUserId(authorization, req);
       return true;
     } catch (error) {
@@ -44,7 +44,7 @@ export class GqlAuthGuard extends AuthGuard('jwt') {
   }
 
   async setUserId(authorization, req) {
-    let tmp = jwt.verify(authorization.split(" ")[1], process.env.JWT_SECRET) as getPermission;
+    let tmp = jwt.verify(authorization, process.env.JWT_SECRET) as getPermission;
     let userId = tmp.userId;
     req.userId = userId;
   }
