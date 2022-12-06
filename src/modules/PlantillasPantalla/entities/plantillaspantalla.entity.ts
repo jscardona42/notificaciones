@@ -10,8 +10,8 @@ export class PlantillasPantalla {
     @Field(() => String)
     titulo: string
 
-    @Field(() => Number)
-    icono: number
+    @Field(() => String)
+    icono: string
 
     @Field(() => String)
     cuerpo_notificacion: string
