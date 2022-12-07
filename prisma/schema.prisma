@@ -111,6 +111,7 @@ model NotificacionesPantalla {
   fecha_generacion         DateTime
   fecha_leido              DateTime?
   usuario_destino          Int
+  visto                    Boolean            @default(false)
   leido                    Boolean            @default(false)
   plantilla_pantalla_id    Int
   PlantillasPantalla       PlantillasPantalla @relation(fields: [plantilla_pantalla_id], references: [plantilla_pantalla_id], onDelete: NoAction, map: "fk_plantilla_pantalla_id")
