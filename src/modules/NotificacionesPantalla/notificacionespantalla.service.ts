@@ -1,7 +1,7 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { PrismaService } from '../../prisma.service';
 import { PlantillasPantallaService } from '../PlantillasPantalla/plantillaspantalla.service';
-import { CreateNotificacionesPantallaInput, UpdateNotificacionesPantallaInput } from './dto/notificacionespantalla.dto';
+import { CreateNotificacionesPantallaArrayInput, CreateNotificacionesPantallaInput, UpdateNotificacionesPantallaInput } from './dto/notificacionespantalla.dto';
 
 @Injectable()
 export class NotificacionesPantallaService {
@@ -28,16 +28,23 @@ export class NotificacionesPantallaService {
         return notificacion;
     }
 
-    async createNotificacionPantalla(data: CreateNotificacionesPantallaInput): Promise<any> {
+    async createNotificacionPantalla(data: CreateNotificacionesPantallaArrayInput): Promise<any> {
+        let createNotificacionPantalla = [];
 
-        await this.plantillasPantallaService.getPlantillaPantallaById(data.plantilla_pantalla_id)
+        await data.data.reduce(async (promise0, notpan) => {
+            await promise0;
 
-        return this.prismaService.notificacionesPantalla.create({
-            data: {
+            await this.plantillasPantallaService.getPlantillaPantallaById(notpan.plantilla_pantalla_id);
+
+            createNotificacionPantalla.push({
                 fecha_generacion: new Date(),
-                usuario_destino: data.usuario_destino,
-                plantilla_pantalla_id: data.plantilla_pantalla_id
-            }
+                usuario_destino: notpan.usuario_destino,
+                plantilla_pantalla_id: notpan.plantilla_pantalla_id
+            });
+        }, Promise.resolve());
+
+        return this.prismaService.notificacionesPantalla.createMany({
+            data: createNotificacionPantalla
         });
     }
 

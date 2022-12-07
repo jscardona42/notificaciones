@@ -1,5 +1,5 @@
-import { Body, Controller, Get, Param, Post } from '@nestjs/common';
-import { CreateNotificacionesPantallaInput } from './dto/notificacionespantalla.dto';
+import { Body, Controller, Get, Post, Put } from '@nestjs/common';
+import { CreateNotificacionesPantallaArrayInput, UpdateNotificacionesPantallaInput } from './dto/notificacionespantalla.dto';
 import { NotificacionesPantallaService } from './notificacionespantalla.service';
 
 @Controller('notificacionespantalla')
@@ -19,9 +19,13 @@ export class NotificacionesPantallaController {
     }
 
     @Post('create')
-    async createNotificacionPantalla(@Body("data") data: CreateNotificacionesPantallaInput): Promise<any> {
-        console.log(data);
+    async createNotificacionPantalla(@Body("data") data: CreateNotificacionesPantallaArrayInput): Promise<any> {
         return this.notificacionesPantallaService.createNotificacionPantalla(data);
+    }
+
+    @Put('update')
+    async updateNotificacionPantalla(@Body("data") data: UpdateNotificacionesPantallaInput): Promise<any> {
+        return this.notificacionesPantallaService.updateNotificacionPantalla(data);
     }
 
     @Post("getByUsuarioId")

@@ -15,23 +15,28 @@ export class CreateNotificacionesPantallaInput {
 }
 
 @InputType()
+export class CreateNotificacionesPantallaArrayInput {
+
+    @Field(() => [CreateNotificacionesPantallaInput])
+    @IsNotEmpty()
+    data: CreateNotificacionesPantallaInput[]
+}
+
+@InputType()
 export class UpdateNotificacionesPantallaInput {
 
     @Field(() => Number)
     @IsNotEmpty()
     notificacion_pantalla_id: number
 
-    @Field(() => Date, { nullable: true })
-    fecha_generacion?: Date
-
-    @Field(() => Date, { nullable: true })
-    fecha_leido?: Date
-
     @Field(() => Number, { nullable: true })
     usuario_destino?: number
 
     @Field(() => Boolean, { nullable: true })
     leido?: boolean
+
+    @Field(() => Boolean, { nullable: true })
+    visto?: boolean
 
     @Field(() => Number, { nullable: true })
     plantilla_pantalla_id?: number
