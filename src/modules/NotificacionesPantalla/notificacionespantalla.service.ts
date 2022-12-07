@@ -74,19 +74,23 @@ export class NotificacionesPantallaService {
     async checkNotificacionesPantallaVisto(usuario_destino: number) {
 
         let notificaciones = await this.getNotificacionesPantallaByUserId(usuario_destino);
+        if (usuario_destino == undefined) {
+            usuario_destino = 0;
+        }
 
         if (notificaciones.length == 0) {
             return [];
         }
 
         let count = await this.prismaService.notificacionesPantalla.updateMany({
-            where: { usuario_destino: usuario_destino, visto: false },
+            where: { AND: [{ usuario_destino: usuario_destino }, { visto: false }] },
             data: {
                 visto: true
             },
         });
 
         return this.prismaService.notificacionesPantalla.findMany({
+            where: { usuario_destino: usuario_destino },
             orderBy: { notificacion_pantalla_id: "desc" },
             take: count.count
         });
