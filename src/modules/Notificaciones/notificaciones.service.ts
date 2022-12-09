@@ -12,7 +12,7 @@ export class NotificacionesService {
 
     async sendNotificacionCorreo(data: NotificacionesCorreoInput) {
 
-        if (data.correo == undefined || data.nombre_usuario == undefined) {
+        if (data.correo == undefined || data.nombre_usuario == undefined || data.params === undefined) {
             return { error: "Debe suministrar los datos completos", error_code: "017" };
         }
 
@@ -56,7 +56,7 @@ export class NotificacionesService {
         apiKey.apiKey = parametroLlave.valor;
 
         // await this.updateWebHook(parametroLlave.valor);
-        // await this.getAllWebhooks(parametroLlave.valor);
+        await this.getAllWebhooks(parametroLlave.valor);
 
         return apiKey;
     }
@@ -172,7 +172,7 @@ export class NotificacionesService {
         let apiKey = apiInstance.authentications['apiKey'];
         apiKey.apiKey = api;
 
-        let webhookId = 676089;
+        let webhookId = 683731;
 
         let updateWebhook = new SibApiV3Sdk.UpdateWebhook();
 
