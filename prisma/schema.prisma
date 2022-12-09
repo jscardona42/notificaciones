@@ -100,7 +100,7 @@ model PlantillasPantalla {
   titulo                 String                   @db.VarChar(255)
   icono                  String                   @db.VarChar(255)
   cuerpo_notificacion    String                   @db.VarChar(255)
-  vinculo                String                   @db.VarChar(255)
+  vinculo                String?                  @db.VarChar(255)
   NotificacionesPantalla NotificacionesPantalla[]
 
   @@index([plantilla_pantalla_id], name: "idx_plantilla_pantalla_id")
