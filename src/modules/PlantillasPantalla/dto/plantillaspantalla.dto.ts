@@ -17,9 +17,8 @@ export class CreatePlantillasPantallaInput {
     @IsNotEmpty()
     icono: string
 
-    @Field(() => String)
-    @IsNotEmpty()
-    vinculo: string
+    @Field(() => String, { nullable: true })
+    vinculo?: string
 }
 
 @InputType()
@@ -33,11 +32,11 @@ export class UpdatePlantillasPantallaInput {
     titulo?: string
 
     @Field(() => String, { nullable: true })
-    cuerpo_notificacion: string
+    cuerpo_notificacion?: string
 
     @Field(() => String, { nullable: true })
-    icono: string
+    icono?: string
 
     @Field(() => String, { nullable: true })
-    vinculo: string
+    vinculo?: string
 }
