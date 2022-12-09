@@ -16,7 +16,7 @@ export class PlantillasPantalla {
     @Field(() => String)
     cuerpo_notificacion: string
 
-    @Field(() => String)
-    vinculo: string
+    @Field(() => String, { nullable: true })
+    vinculo?: string
 
 }
