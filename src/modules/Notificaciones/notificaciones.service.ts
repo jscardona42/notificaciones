@@ -63,6 +63,7 @@ export class NotificacionesService {
 
     async sendMail(data: any, params: any, proveedor_mensajeria_id: number, nombre_plantilla: string) {
 
+        let templateInfo = [];
         let apiInstance = new SibApiV3Sdk.TransactionalEmailsApi();
         await this.buildApiKey(proveedor_mensajeria_id, apiInstance);
 
@@ -70,9 +71,13 @@ export class NotificacionesService {
         let offset = 0;
 
         let sendinblue = await apiInstance.getSmtpTemplates(true, limit, offset);
-        const templateInfo = sendinblue.response.body.templates.filter(data => data.name === nombre_plantilla);
+        templateInfo = sendinblue.response.body.templates.filter(data => data.name === nombre_plantilla);
 
         let sendSmtpEmail = new SibApiV3Sdk.SendSmtpEmail();
+
+        if (templateInfo.length === 0) {
+            return { error: "El nombre de la plantilla no existe", error_code: "019" };
+        }
 
         sendSmtpEmail.templateId = templateInfo[0].id;
         sendSmtpEmail.sender = { email: templateInfo[0].sender.email, name: templateInfo[0].sender.name };
