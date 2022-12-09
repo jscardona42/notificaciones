@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { PrismaService } from '../../prisma.service';
 import { NotificacionesCorreoInput, NotificacionesSmsInput } from './dto/notificaciones.dto';
 const SibApiV3Sdk = require('sib-api-v3-typescript');
@@ -13,7 +13,7 @@ export class NotificacionesService {
     async sendNotificacionCorreo(data: NotificacionesCorreoInput) {
 
         if (data.correo == undefined || data.nombre_usuario == undefined || data.params === undefined) {
-            return { error: "Debe suministrar los datos completos", error_code: "017" };
+            throw new UnauthorizedException({ error: "Debe suministrar los datos completos", error_code: "017" });
         }
 
         let info = await this.sendMail(data, data.params, 1, data.nombre_plantilla)
@@ -21,7 +21,7 @@ export class NotificacionesService {
             return { notificacion: "Enviado correctamente", statusCode: 200 };
         }
         else {
-            return { error: "No se pudo enviar el mensaje", error_code: "018" };
+            throw new UnauthorizedException({ error: "No se pudo enviar el mensaje", error_code: "018" });
         }
     }
 

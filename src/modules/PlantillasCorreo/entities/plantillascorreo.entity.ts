@@ -19,6 +19,6 @@ export class PlantillasCorreo {
     @Field(() => String, { description: "Cuerpo de la pantilla de correo" })
     cuerpo: string
 
-    @Field(() => String, { description: "Descripción una pantilla de correo" })
-    descripcion: string
+    @Field(() => String, { nullable: true, description: "Descripción una pantilla de correo" })
+    descripcion?: string
 }

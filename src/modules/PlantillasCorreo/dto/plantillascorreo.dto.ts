@@ -21,9 +21,8 @@ export class CreatePlantillaCorreoInput {
     @IsNotEmpty()
     cuerpo: string
 
-    @Field(() => String)
-    @IsNotEmpty()
-    descripcion: string
+    @Field(() => String, { nullable: true })
+    descripcion?: string
 }
 
 @InputType()
@@ -33,18 +32,18 @@ export class UpdatePlantillaCorreoInput {
     @IsNotEmpty()
     plantilla_correo_id: number
 
-    @Field(() => String)
+    @Field(() => String, { nullable: true })
     codigo?: string
 
-    @Field(() => String)
+    @Field(() => String, { nullable: true })
     nombre?: string
 
-    @Field(() => String)
+    @Field(() => String, { nullable: true })
     asunto?: string
 
-    @Field(() => String)
+    @Field(() => String, { nullable: true })
     cuerpo?: string
 
-    @Field(() => String)
+    @Field(() => String, { nullable: true })
     descripcion?: string
 }

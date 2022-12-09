@@ -19,6 +19,6 @@ export class ProveedoresMensajeria {
     @Field(() => MedioMensajeria)
     medio_mensajeria: MedioMensajeria
 
-    @Field(() => [ProveedoresMensajeriaParametros])
-    ProveedoresMensajeriaParametros: ProveedoresMensajeriaParametros[]
+    @Field(() => [ProveedoresMensajeriaParametros], { nullable: true })
+    ProveedoresMensajeriaParametros?: ProveedoresMensajeriaParametros[]
 }
