@@ -4,6 +4,9 @@ import JSON from 'graphql-type-json';
 
 @InputType()
 export class NotificacionesCorreoInput {
+    @Field(() => Int)
+    @IsNotEmpty()
+    proveedor_mensajeria_id: number
 
     @Field(() => String)
     @IsNotEmpty()
@@ -32,4 +35,21 @@ export class NotificacionesSmsInput {
 
     @Field(() => Int)
     plantilla_sms_id: number
+}
+
+@InputType()
+export class NotificacionesWhatsappInput {
+
+    @Field(() => [String])
+    @IsNotEmpty()
+    telefono: string[]
+
+    @Field(() => String, { nullable: true })
+    plantilla_whatsapp_titulo?: string
+
+    @Field(() => Int, { nullable: true })
+    nombre_plantilla?: number
+
+    @Field(() => String, { nullable: true })
+    parametro?: string
 }
