@@ -10,24 +10,29 @@ export class PlantillasPantallaResolver {
         private readonly plantillasPantallaService: PlantillasPantallaService
     ) { }
 
-    @Query(() => [PlantillasPantalla])
+    @Query(() => [PlantillasPantalla], { description: "Obtener todas las plantillas pantalla" })
     async getPlantillasPantalla(): Promise<any> {
         return this.plantillasPantallaService.getPlantillasPantalla();
     }
 
-    @Query(() => PlantillasPantalla)
+    @Query(() => PlantillasPantalla, { description: "Obtener una plantilla pantalla por ID" })
     async getPlantillaPantallaById(@Args("plantilla_pantalla_id") plantilla_pantalla_id: number): Promise<any> {
         return this.plantillasPantallaService.getPlantillaPantallaById(plantilla_pantalla_id);
     }
 
-    @Mutation(() => PlantillasPantalla)
+    @Mutation(() => PlantillasPantalla, { description: "Crear una plantilla pantalla" })
     async createPlantillasPantalla(@Args("data") data: CreatePlantillasPantallaInput): Promise<any> {
         return this.plantillasPantallaService.createPlantillasPantalla(data);
     }
 
-    @Mutation(() => PlantillasPantalla)
+    @Mutation(() => PlantillasPantalla, { description: "Actualizar una plantilla pantalla" })
     async updatePlantillasPantalla(@Args("data") data: UpdatePlantillasPantallaInput): Promise<any> {
         return this.plantillasPantallaService.updatePlantillasPantalla(data);
+    }
+
+    @Mutation(() => PlantillasPantalla, { description: "Desactivar una plantilla pantalla" })
+    async deletePlantillPantalla(@Args("plantilla_pantalla_id") plantilla_whatsapp_id: number): Promise<any> {
+        return this.plantillasPantallaService.deletePlantillPantalla(plantilla_whatsapp_id);
     }
 
 }

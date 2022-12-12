@@ -1,10 +1,10 @@
 import 'reflect-metadata'
-import { ObjectType, Field } from '@nestjs/graphql'
+import { ObjectType, Field, Int } from '@nestjs/graphql'
 
 @ObjectType()
 export class PlantillasPantalla {
 
-    @Field(() => Number)
+    @Field(() => Int)
     plantilla_pantalla_id: number
 
     @Field(() => String)
