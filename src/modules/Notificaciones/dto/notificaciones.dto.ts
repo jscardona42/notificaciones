@@ -44,12 +44,10 @@ export class NotificacionesWhatsappInput {
     @IsNotEmpty()
     telefono: string[]
 
-    @Field(() => String, { nullable: true })
-    plantilla_whatsapp_titulo?: string
+    @Field(() => String)
+    @IsNotEmpty()
+    nombre_plantilla: string
 
-    @Field(() => Int, { nullable: true })
-    nombre_plantilla?: number
-
-    @Field(() => String, { nullable: true })
-    parametro?: string
+    @Field(() => [String], { nullable: true })
+    parametros?: string[]
 }

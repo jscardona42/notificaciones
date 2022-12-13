@@ -4,7 +4,7 @@ import { PlantillasWhatsapp } from './entities/plantillaswhatsapp.entity';
 import { PlantillasWhatsappService } from './plantillaswhatsapp.service';
 
 @Resolver(() => PlantillasWhatsapp)
-export class PlantillasWhatResolver {
+export class PlantillasWhatsappResolver {
 
     constructor(
         private readonly plantillasWhatsappService: PlantillasWhatsappService
