@@ -1,6 +1,8 @@
 import { Test } from '@nestjs/testing';
 import { PrismaService } from '../../prisma.service';
+import { CreatePlantillasPantallaInput } from '../PlantillasPantalla/dto/plantillaspantalla.dto';
 import { PlantillasPantallaService } from '../PlantillasPantalla/plantillaspantalla.service';
+import { CreateNotificacionesPantallaArrayInput } from './dto/notificacionespantalla.dto';
 import { NotificacionesPantallaService } from './notificacionespantalla.service';
 
 describe('NotificacionesPantalla Service', () => {
@@ -54,15 +56,15 @@ describe('NotificacionesPantalla Service', () => {
     });
 
     describe('createNotificacionPantalla method', () => {
-        it('should invoke prismaService.notificacionesPantallaService.create', async () => {
-            const testParams = {
-                data: {
-                    usuario_destino: 106,
-                    plantilla_pantalla_id: 1
-                }
+        it('should invoke prismaService.notificacionesPantallaService.createMany', async () => {
+            const testParams: CreateNotificacionesPantallaArrayInput = {
+                data: [
+                    { plantilla_pantalla_id: 1, usuario_destino: 1 }
+                ]
+
             };
-            await notificacionesPantallaService.createNotificacionPantalla(testParams.data);
-            expect(prismaService.notificacionesPantalla.create).toHaveBeenCalled();
+            await notificacionesPantallaService.createNotificacionPantalla(testParams);
+            expect(prismaService.notificacionesPantalla.createMany).toHaveBeenCalled();
         });
     });
 
