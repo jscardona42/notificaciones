@@ -142,9 +142,3 @@ enum TipoRemitente {
   NOMINA_ELECTRONICA
   NOTIFICACION_MASIVA
 }
-
-enum TipoPlantillaWhatsapp {
-  TEXT
-  BUTTON
-  NOTIFICACION_MASIVA
-}
