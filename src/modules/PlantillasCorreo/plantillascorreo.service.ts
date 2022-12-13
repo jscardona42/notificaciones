@@ -52,4 +52,13 @@ export class PlantillasCorreoService {
             }
         });
     }
+
+    async deletePlantillaCorreo(plantilla_correo_id: number): Promise<any> {
+        await this.getPlantillaCorreoById(plantilla_correo_id);
+
+        return this.prismaService.plantillasCorreo.update({
+            where: { plantilla_correo_id: plantilla_correo_id },
+            data: { estado: false }
+        })
+    }
 }

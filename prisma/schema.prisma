@@ -39,12 +39,13 @@ model CorreosRemitentes {
 }
 
 model PlantillasCorreo {
-  plantilla_correo_id Int    @id(map: "pk_plantilla_correo_id") @default(autoincrement())
-  codigo              String @db.VarChar(20)
-  nombre              String @db.VarChar(255)
-  asunto              String @default("") @db.Text()
-  cuerpo              String @default("") @db.Text()
-  descripcion         String @default("") @db.Text()
+  plantilla_correo_id Int     @id(map: "pk_plantilla_correo_id") @default(autoincrement())
+  codigo              String  @db.VarChar(20)
+  nombre              String  @db.VarChar(255)
+  asunto              String  @default("") @db.Text()
+  cuerpo              String  @default("") @db.Text()
+  descripcion         String? @default("") @db.Text()
+  estado              Boolean @default(true)
 
   @@index([plantilla_correo_id], name: "idx_plantilla_correo_id")
 }
@@ -101,9 +102,20 @@ model PlantillasPantalla {
   icono                  String                   @db.VarChar(255)
   cuerpo_notificacion    String                   @db.VarChar(255)
   vinculo                String?                  @db.VarChar(255)
+  estado                 Boolean                  @default(true)
   NotificacionesPantalla NotificacionesPantalla[]
 
   @@index([plantilla_pantalla_id], name: "idx_plantilla_pantalla_id")
+}
+
+model PlantillasWhatsapp {
+  plantilla_whatsapp_id Int     @id(map: "pk_plantilla_whatsapp_id") @default(autoincrement())
+  titulo                String  @db.VarChar(50)
+  cuerpo_notificacion   String  @default("") @db.Text()
+  vinculo               String? @db.VarChar(255)
+  estado                Boolean @default(true)
+
+  @@index([plantilla_whatsapp_id], name: "idx_plantilla_whatsapp_id")
 }
 
 model NotificacionesPantalla {

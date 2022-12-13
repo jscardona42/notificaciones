@@ -44,4 +44,13 @@ export class PlantillasPantallaService {
             }
         });
     }
+
+    async deletePlantillPantalla(plantilla_pantalla_id: number): Promise<any> {
+        await this.getPlantillaPantallaById(plantilla_pantalla_id);
+
+        return this.prismaService.plantillasPantalla.update({
+            where: { plantilla_pantalla_id: plantilla_pantalla_id },
+            data: { estado: false }
+        })
+    }
 }

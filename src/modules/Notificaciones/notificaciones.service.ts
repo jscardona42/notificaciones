@@ -1,13 +1,14 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { PrismaService } from '../../prisma.service';
-import { NotificacionesCorreoInput, NotificacionesSmsInput } from './dto/notificaciones.dto';
+import { NotificacionesCorreoInput, NotificacionesSmsInput, NotificacionesWhatsappInput } from './dto/notificaciones.dto';
 const SibApiV3Sdk = require('sib-api-v3-typescript');
+import axios from 'axios';
 
 
 @Injectable()
 export class NotificacionesService {
     constructor(
-        private prismaService: PrismaService,
+        private prismaService: PrismaService
     ) { }
 
     async sendNotificacionCorreo(data: NotificacionesCorreoInput) {
@@ -16,12 +17,12 @@ export class NotificacionesService {
             throw new UnauthorizedException({ error: "Debe suministrar los datos completos", error_code: "017" });
         }
 
-        let info = await this.sendMail(data, data.params, 1, data.nombre_plantilla)
+        let info = await this.sendMail(data, data.params, data.proveedor_mensajeria_id, data.nombre_plantilla)
         if (info.correo_enviado_id !== undefined) {
             return { notificacion: "Enviado correctamente", statusCode: 200 };
         }
         else {
-            throw new UnauthorizedException({ error: "No se pudo enviar el mensaje", error_code: "018" });
+            throw new UnauthorizedException(info);
         }
     }
 
@@ -40,24 +41,97 @@ export class NotificacionesService {
         }
     }
 
-    async buildApiKey(proveedor_mensajeria_id: number, apiInstance: any) {
+    async sendNotificacionWhatsapp(data: NotificacionesWhatsappInput) {
+        let parametroLlave = await this.getParamatroByproveedorIdAndNombre(3, "llave");
+        let parametroCuenta = await this.getParamatroByproveedorIdAndNombre(3, "cuenta");
+        let parametroUrlApi = await this.getParamatroByproveedorIdAndNombre(3, "url_api");
 
-        let apiKey = apiInstance.authentications['apiKey'];
+        if (parametroLlave.valor == undefined || parametroCuenta.valor == undefined || parametroUrlApi.valor == undefined) {
+            return { error: "No se encontraron los parámetros necesarios para enviar el mensaje por Whatsapp", error_code: "020" };
+        }
 
-        let parametroLlave = await this.prismaService.proveedoresMensajeriaParametrosValores.findFirst({
+        let url_api = parametroUrlApi.valor.replace("VERSION", process.env.VERSION_WHATSAPP).replace("CUENTA", parametroCuenta.valor);
+
+        let message = await this.buildDataWhatsapp(data);
+
+        if (message["error"] !== undefined) {
+            throw new UnauthorizedException(message);
+        }
+
+        let res = await axios.post(url_api, message,
+            { headers: { Authorization: `Bearer ${parametroLlave.valor}` } })
+            .then((res) => { return res.data })
+            .catch(err => { return err.response.data });
+        if (res.error !== undefined) {
+            throw new UnauthorizedException({ error: "El nombre de la plantilla o los parámetros no son correctos", error_code: "021", error_original: res.error });
+        }
+        return res;
+    }
+
+    async getParamatroByproveedorIdAndNombre(proveedor_mensajeria_id: number, nombre: string) {
+
+        return this.prismaService.proveedoresMensajeriaParametrosValores.findFirst({
             where: {
                 ProveedoresMensajeria: {
                     proveedor_mensajeria_id: proveedor_mensajeria_id
-                }, ProveedoresMensajeriaParametros: { nombre: "llave" }
+                }, ProveedoresMensajeriaParametros: { nombre: nombre }
             },
             select: { valor: true }
         });
+    }
+
+    async buildDataWhatsapp(data: NotificacionesWhatsappInput) {
+        let telefono: any;
+        let componentes: any;
+        let body: any;
+
+        if (data.telefono.length == 1) {
+            telefono = data.telefono[0];
+        } else {
+            telefono = data.telefono;
+        }
+
+        let message = {
+            messaging_product: "whatsapp",
+            recipient_type: "individual",
+            to: telefono,
+            type: "template"
+        }
+
+        if (data.nombre_plantilla !== undefined) {
+            let parametros = [];
+
+            if (data.parametros !== undefined) {
+
+                data.parametros.forEach(parametro => {
+                    parametros.push({
+                        type: "text",
+                        text: parametro
+                    });
+                });
+
+                componentes = [
+                    {
+                        type: "body",
+                        parameters: parametros
+                    }
+                ]
+            }
+
+            body = {
+                name: data.nombre_plantilla, language: { code: "es" }, components: componentes
+            }
+        }
+        Object.assign(message, { template: body });
+        return message;
+    }
+
+    async buildApiKeySendinblue(proveedor_mensajeria_id: number, apiInstance: any) {
+
+        let apiKey = apiInstance.authentications['apiKey'];
+        let parametroLlave = await this.getParamatroByproveedorIdAndNombre(proveedor_mensajeria_id, "llave");
 
         apiKey.apiKey = parametroLlave.valor;
-
-        // await this.updateWebHook(parametroLlave.valor);
-        await this.getAllWebhooks(parametroLlave.valor);
-
         return apiKey;
     }
 
@@ -65,7 +139,7 @@ export class NotificacionesService {
 
         let templateInfo = [];
         let apiInstance = new SibApiV3Sdk.TransactionalEmailsApi();
-        await this.buildApiKey(proveedor_mensajeria_id, apiInstance);
+        await this.buildApiKeySendinblue(proveedor_mensajeria_id, apiInstance);
 
         let limit = 50;
         let offset = 0;
@@ -98,7 +172,7 @@ export class NotificacionesService {
     async sendSMS(data: any, proveedor_mensajeria_id: number) {
 
         let apiInstance = new SibApiV3Sdk.TransactionalSMSApi();
-        await this.buildApiKey(proveedor_mensajeria_id, apiInstance);
+        await this.buildApiKeySendinblue(proveedor_mensajeria_id, apiInstance);
 
         let sendTransacSms = new SibApiV3Sdk.SendTransacSms();
 

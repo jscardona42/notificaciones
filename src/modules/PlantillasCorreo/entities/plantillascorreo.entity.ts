@@ -1,10 +1,10 @@
 import 'reflect-metadata'
-import { ObjectType, Field } from '@nestjs/graphql'
+import { ObjectType, Field, Int } from '@nestjs/graphql'
 
 @ObjectType({ description: "Plantillas para el envío de correos" })
 export class PlantillasCorreo {
 
-    @Field(() => Number)
+    @Field(() => Int)
     plantilla_correo_id: number
 
     @Field(() => String, { description: "Código de la plantilla de correo" })

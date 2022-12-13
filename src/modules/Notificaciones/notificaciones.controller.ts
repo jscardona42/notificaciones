@@ -1,5 +1,5 @@
 import { Controller, Post, Body } from '@nestjs/common';
-import { NotificacionesCorreoInput, NotificacionesSmsInput } from './dto/notificaciones.dto';
+import { NotificacionesCorreoInput, NotificacionesSmsInput, NotificacionesWhatsappInput } from './dto/notificaciones.dto';
 import { NotificacionesService } from './notificaciones.service';
 
 @Controller('notificaciones')
@@ -21,6 +21,11 @@ export class NotificacionesController {
     @Post('sms')
     async sendNotificacionSms(@Body("data") data: NotificacionesSmsInput): Promise<any> {
         return this.notificacionesService.sendNotificacionSms(data);
+    }
+
+    @Post('whatsapp')
+    async sendNotificacionWhatsapp(@Body("data") data: NotificacionesWhatsappInput): Promise<any> {
+        return this.notificacionesService.sendNotificacionWhatsapp(data);
     }
 
 }
