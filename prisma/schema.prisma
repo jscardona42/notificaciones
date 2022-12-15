@@ -66,6 +66,19 @@ model CorreosEnviados {
   @@index([correo_enviado_id], name: "idx_correo_enviado_id")
 }
 
+model MensajesEnviados {
+  mensaje_enviado_id           Int                           @id(map: "pk_mensaje_enviado_id") @default(autoincrement())
+  empresa_id                  Int
+  fecha_envio                 DateTime
+  indicador_entregado         Boolean
+  numero_destino              String?                       @db.VarChar(120)
+  peticion                    String                        @default("") @db.Text()
+  respuesta                   String                        @default("") @db.Text()
+  origen_peticion             String                        @db.VarChar(100)
+
+  @@index([mensaje_enviado_id], name: "idx_mensaje_enviado_id")
+}
+
 model CorreosEnviadosTrazabilidad {
   correo_enviado_trazabilidad_id Int                @id(map: "pk_correo_enviado_trazabilidad_id") @default(autoincrement())
   evento                         String             @db.VarChar(100)
