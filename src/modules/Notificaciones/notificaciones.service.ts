@@ -62,6 +62,9 @@ export class NotificacionesService {
             { headers: { Authorization: `Bearer ${parametroLlave.valor}` } })
             .then((res) => { return res.data })
             .catch(err => { return err.response.data });
+
+        await this.saveMensajesEnviados(data, res, message);
+
         if (res.error !== undefined) {
             throw new UnauthorizedException({ error: "El nombre de la plantilla o los parámetros no son correctos", error_code: "021", error_original: res.error });
         }
@@ -192,9 +195,11 @@ export class NotificacionesService {
     }
 
     async saveCorreosEnviados(data: any, sendinBlue_Mail: any, sendSmtpEmail: any) {
+        let entregado: boolean = true;
 
         if (sendinBlue_Mail.response.statusCode == 400) {
             sendinBlue_Mail.body.messageId = null;
+            entregado = false;
         }
 
         return this.prismaService.correosEnviados.create({
@@ -202,12 +207,31 @@ export class NotificacionesService {
                 empresa_id: 1,
                 fecha_envio: new Date(JSON.stringify(sendinBlue_Mail.response.headers.date)),
                 correo_destino: data.correo,
-                indicador_entregado: true,
+                indicador_entregado: entregado,
                 mensaje_id: JSON.stringify(sendinBlue_Mail.body.messageId),
                 origen_peticion: "admin",
                 fecha_recibido: new Date(),
                 respuesta: JSON.stringify(sendinBlue_Mail.response),
                 peticion: JSON.stringify(sendSmtpEmail),
+            }
+        })
+    }
+
+    async saveMensajesEnviados(data: any, res: any, message: any) {
+        let entregado: boolean = true;
+        if (res.error !== undefined) {
+            entregado = false;
+        }
+
+        return this.prismaService.mensajesEnviados.create({
+            data: {
+                empresa_id: 1,
+                fecha_envio: new Date(),
+                numero_destino: message.to,
+                indicador_entregado: entregado,
+                origen_peticion: "origen",
+                respuesta: JSON.stringify(res),
+                peticion: JSON.stringify(message),
             }
         })
     }
