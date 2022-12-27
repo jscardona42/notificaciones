@@ -27,18 +27,6 @@ pipelines:
           - coverage/lcov.info
         services:
           - docker
-    - step:
-        image: maven:3.3.9-alpine
-        name: SonarQube analysis
-        clone:
-          depth: full
-        script:
-          - pipe: sonarsource/sonarqube-scan:1.1.0
-            variables:
-              SONAR_HOST_URL: ${SONAR_HOST_URL} # Get the value from the repository/workspace variable.
-              SONAR_TOKEN: ${SONAR_TOKEN} # Get the value from the repository/workspace variable. You shouldn't set secret in clear text here.
-              SONAR_SCANNER_OPTS: -Xmx512m
-              EXTRA_ARGS: "-Dsonar.projectKey=notificaciones"
 definitions:
   services:
     docker:
